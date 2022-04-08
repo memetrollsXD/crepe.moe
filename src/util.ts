@@ -26,8 +26,9 @@ async function getUploads() {
     return await JSON.parse(fs.readFileSync('./src/uploads.json', 'utf8'));
 }
 
-export async function getUploadByUID(uid: string): Promise<UploadI> {
+export async function getUploadByUID(uid: string): Promise<UploadI | undefined> {
     const uploads = await getUploads();
     // console.log(uploads.root.find((upload: UploadI) => upload.uid === uid));
-    return uploads.root.find((upload: UploadI) => upload.uid === uid);
+    const found = uploads.root.find((upload: UploadI) => upload.uid === uid);
+    return found || undefined;
 }

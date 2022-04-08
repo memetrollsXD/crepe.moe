@@ -21,7 +21,7 @@ export default async function displayFriendly(req: Request, res: Response) {
             res.status(301).redirect('https://crepe.moe');
             return;
         }
-        const filePath = `/var/www/crepemoe/src/uploads/${upload.uid}.${upload.ext}`;
+        const filePath = `/var/www/crepe.moe/src/uploads/${upload.uid}.${upload.ext}`;
         if (!fs.existsSync(filePath)) {
             res.status(301).redirect('https://crepe.moe');
             return;

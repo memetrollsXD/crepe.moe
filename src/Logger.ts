@@ -33,6 +33,7 @@ export default class Logger {
             writeLog(this.logName, `[${new Date().toLocaleString()}] ${data}`);
         };
         this.error = (data: string) => {
+	console.log(data)
             this.raw(color("ERROR").red, color(data).red);
         };
         this.warn = (data: string) => {

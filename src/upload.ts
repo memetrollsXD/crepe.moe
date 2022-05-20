@@ -28,7 +28,7 @@ export default async function run(req: Request, res: Response) {
             res.send(fileName.saveAs);
         });
     } catch (e) {
-        c.error(e);
+        c.error(e as unknown as Error);
         res.status(500).send("An error has occured. Please contact info@crepe.moe");
     }
 }

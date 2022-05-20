@@ -52,7 +52,7 @@ export default async function displayFriendly(req: Request, res: Response) {
         c.log(`${req.originalUrl.split('?')[0]} requested by ${req.ip.split(':')[3]}`);
         res.send(page.render());
     } catch (e) {
-        c.error(e);
+        c.error(e as unknown as Error);
         res.status(500).send("An error has occured. Please contact info@crepe.moe");
     }
 }

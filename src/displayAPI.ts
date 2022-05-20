@@ -28,7 +28,7 @@ export default async function displayAPI(req: Request, res: Response) {
         // c.log(`${upload.uid} requested by ${req.ip.split(':')[3]}`);
         res.sendFile(filePath);
     } catch (e) {
-        c.error(e);
+        c.error(e as unknown as Error);
         res.status(500).send("An error has occured. Please contact info@crepe.moe");
     }
 }

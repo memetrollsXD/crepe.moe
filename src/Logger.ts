@@ -4,6 +4,7 @@
  * @param logName What are you logging?
  */
 import color from 'colorts';
+import 'colorts/lib/string';
 import fs from 'fs';
 
 function writeLog(logName: string, message: string) {
@@ -17,10 +18,7 @@ function writeLog(logName: string, message: string) {
 
 export default class Logger {
     log: Function;
-    error: Function;
-    warn: Function;
     raw: Function;
-    debug: Function;
     logName: string;
     constructor(logName: string) {
         this.logName = logName;
@@ -32,15 +30,27 @@ export default class Logger {
             this.raw(color(logName).yellow, color(data).green);
             writeLog(this.logName, `[${new Date().toLocaleString()}] ${data}`);
         };
-        this.error = (data: string) => {
-	console.log(data)
-            this.raw(color("ERROR").red, color(data).red);
-        };
-        this.warn = (data: string) => {
-            this.raw(color("WARN").yellow, color(data).bgYellow.black.bold);
-        };
-        this.debug = (data: string) => {
-            this.raw(color(logName).white.bgBlue, color(data).white.bgBlue);
-        };
+    }
+
+    private getDate(): string {
+        return new Date().toLocaleString();
+    }
+
+    public error(e: Error) {
+        console.log(`[${this.getDate().white.bold}] ${`ERROR<${this.logName}>`.bgRed.bold}`, e.message);
+        if (e.stack) this.trail(e.stack);
+        writeLog(this.logName, `[${this.getDate()}] ${JSON.stringify(e)}`);
+    }
+
+    public trail(...args: string[]) {
+        console.log(`\t↳ ${args.join(' ').gray}`);
+    }
+
+    public warn(...args: any) {
+        console.log(`[${this.getDate().white.bold}] ${'WARN'.bgYellow.bold}`, ...args);
+    }
+
+    public debug(...args: any) {
+        console.log(`[${this.getDate().white.bold}] ${`DEBUG<${this.logName}>`.bgBlue.bold}`, ...args);
     }
 }

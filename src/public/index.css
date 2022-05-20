@@ -88,6 +88,10 @@ p {
     width: 100%;
 }
 
+.uploader #response a {
+    text-decoration: underline;
+}
+
 .uploader #response.hidden {
     display: none;
 }
@@ -105,17 +109,6 @@ p {
 }
 
 .uploader #file-image.hidden {
-    display: none;
-}
-
-.uploader #notimage {
-    display: block;
-    float: left;
-    clear: both;
-    width: 100%;
-}
-
-.uploader #notimage.hidden {
     display: none;
 }
 

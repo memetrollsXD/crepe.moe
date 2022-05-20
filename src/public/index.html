@@ -8,12 +8,12 @@
     <meta property="og:description" content="Free temporary file hosting for everyone!" />
     <meta name="theme-color" content="#161444">
     <link rel="stylesheet" href="index.css">
-    <link rel="icon" href="https://taiga.gg/crepe.ico"/>
+    <link rel="icon" href="https://taiga.gg/crepe.ico" />
     <script src="index.js" defer></script>
 </head>
 
 <body>
-    <h2>crepe.moe</h2>
+    <h2 onclick="window.location.href = '/'" style="cursor: pointer;">crepe.moe</h2>
     <p class="lead">Free temporary file hosting for everyone!</p>
 
     <form id="file-upload-form" class="uploader" action="upload/">
@@ -24,7 +24,6 @@
             <div id="start">
                 <i class="fa fa-download" aria-hidden="true"></i>
                 <div>Drag or paste your image here</div>
-                <div id="notimage" class="hidden">Drag or paste your image here</div>
                 <span id="file-upload-btn" class="btn btn-primary">Select a file</span>
             </div>
             <div id="response" class="hidden">
@@ -35,7 +34,8 @@
             </div>
         </label>
     </form>
-    <footer><a href="/">Home</a> | <a href="/privacy/">Privacy Policy</a> | &#10084; by memetrollsXD</footer>
+    <footer><a href="/">Home</a> | <a href="/privacy/">Privacy Policy</a> | <a
+            href="https://github.com/memetrollsXD/crepe.moe">&#10084; by memetrollsXD</a></footer>
 </body>
 
 </html>

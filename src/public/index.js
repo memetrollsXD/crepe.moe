@@ -18,14 +18,12 @@
         if ((/\.(?=gif|jpg|png|jpeg)/gi).test(file.name)) {
             document.getElementById('start').classList.add("hidden");
             document.getElementById('response').classList.remove("hidden");
-            document.getElementById('notimage').classList.add("hidden");
             // Thumbnail Preview
             document.getElementById('file-image').classList.remove("hidden");
             document.getElementById('file-image').src = URL.createObjectURL(file);
         }
         else {
             document.getElementById('file-image').classList.add("hidden");
-            document.getElementById('notimage').classList.remove("hidden");
             document.getElementById('start').classList.remove("hidden");
             document.getElementById('response').classList.add("hidden");
             document.getElementById("file-upload-form").reset();

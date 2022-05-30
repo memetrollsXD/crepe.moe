@@ -28,8 +28,8 @@
             document.getElementById('response').classList.add("hidden");
             document.getElementById("file-upload-form").reset();
         }
-        if (file.size >= 100 * 1024 ** 2) {
-            console.log(`File too big. ${file.size} > ${100 * 1024 ** 2}`);
+        if (file.size >= 512 * 1024 ** 2) {
+            console.log(`File too big. ${file.size} > ${512 * 1024 ** 2}`);
             return;
         }
         // Make a POST request with the file

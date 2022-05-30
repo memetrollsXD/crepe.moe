@@ -18,8 +18,8 @@ export default async function run(req: Request, res: Response) {
         }
         const file = req.files.file as UploadedFile;
 
-        // If the file size exceeds 100MB, reject it
-        if (file.size > 100 * 1024 * 1024) {
+        // If the file size exceeds 512MB, reject it
+        if (file.size > 512 * 1024 ** 2) {
             res.status(400).send('File is too large');
             return;
         }

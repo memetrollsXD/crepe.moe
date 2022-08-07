@@ -1,7 +1,5 @@
-src/uploads
-src/logs
+uploads
+logs
 node_modules
 package-lock.json
-# For security reasons, idk what people can do with file paths and I'm not about to test it
-cron.sh
-uploads.json
+config.json

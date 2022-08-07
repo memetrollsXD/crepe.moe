@@ -6,31 +6,33 @@
 import color from 'colorts';
 import 'colorts/lib/string';
 import fs from 'fs';
+import { resolve } from 'path';
+
+const r = (...args: string[]) => resolve(__dirname, ...args);
 
 function writeLog(logName: string, message: string) {
     try {
-        if (!fs.existsSync(`./src/logs/${logName}.log`)) fs.writeFileSync(`./src/logs/${logName}.log`, '');
-        fs.appendFileSync(`./src/logs/${logName}.log`, `${message}\n`);
+        if (!fs.existsSync(r(`../logs/${logName}.log`))) fs.writeFileSync(r(`../logs/${logName}.log`), '');
+        fs.appendFileSync(r(`../logs/${logName}.log`), `${message}\n`);
     } catch (e: any) {
         console.log(e);
     }
 }
 
 export default class Logger {
-    log: Function;
-    raw: Function;
-    logName: string;
-    constructor(logName: string) {
-        this.logName = logName;
-        this.raw = (evt: string, data: string) => {
-            const msg = `[${new Date().toLocaleString()}] \t ${evt} \t ${data}`;
-            console.log(msg);
-        };
-        this.log = (data: string) => {
-            this.raw(color(logName).yellow, color(data).green);
-            writeLog(this.logName, `[${new Date().toLocaleString()}] ${data}`);
-        };
+    constructor(public readonly logName: string) {
+
     }
+
+    public raw(evt: any, data: any) {
+        const msg = `[${new Date().toLocaleString()}] \t ${evt} \t ${data}`;
+        console.log(msg);
+    };
+
+    public log(data: string) {
+        this.raw(color(this.logName).yellow, color(data).green);
+        writeLog(this.logName, `[${new Date().toLocaleString()}] ${data}`);
+    };
 
     private getDate(): string {
         return new Date().toLocaleString();

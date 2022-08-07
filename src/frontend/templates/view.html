@@ -1,0 +1,33 @@
+<html>
+
+<head>
+    <title>{{title}} - {{STATIC_DOMAIN_NAME}}</title>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:image" content="{{cdn}}" />
+    <meta property="og:title" content="{{title}}" />
+    <meta property="og:video" content="{{cdn}}" />
+    <meta property="og:video:type" content="video/mp4" />
+    
+    <script src="fa/js/all.min.js" defer></script>
+    <link rel="stylesheet" href="/index.css">
+</head>
+
+<body>
+    <h2 onclick="window.location.href = '/'" style="cursor: pointer;">{{STATIC_DOMAIN_NAME}}</h2>
+    <p class="lead">{{STATIC_SLOGAN}}</p>
+
+    <form id="file-upload-form" class="uploader-other" action="upload/">
+
+        <div class="container-main">
+            <div id="start">
+                <h1>{{title}}</h1>
+                {{preview}}
+                <p>{{views}} <i class="fa-solid fa-eye" aria-hidden="true"></i> &middot; Uploaded {{timestamp}}</p>
+            </div>
+        </div>
+    </form>
+    <footer><a href="/">Home</a> | <a href="/privacy/">Privacy Policy</a> | <a
+            href="https://github.com/memetrollsXD/crepe.moe">❤ GitHub</a></footer>
+</body>
+
+</html>

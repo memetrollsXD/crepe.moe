@@ -82,7 +82,7 @@
         const uploadUrl = document.createElement('input');
         uploadUrl.className = 'upload-url';
         uploadUrl.type = 'text';
-        uploadUrl.value = 'BINGUS';
+        uploadUrl.value = 'Uploading...';
         uploadUrl.readOnly = true;
         uploadUrl.addEventListener('click', () => {
             navigator.clipboard.writeText(uploadUrl.value);
@@ -127,12 +127,11 @@
         const xhr = new XMLHttpRequest();
         uploads.appendChild(upload);
         xhr.open('POST', '/upload');
-        xhr.onprogress = (e) => {
-            if (e.lengthComputable) {
-                const percentComplete = (e.loaded / e.total) * 100;
-                uploadProgress.innerText = `${percentComplete.toFixed(0)}%`;
-            }
-        }
+
+        xhr.upload.addEventListener("progress", (e) => {
+            const percentComplete = (e.loaded / e.total) * 100;
+            uploadProgress.innerText = `${percentComplete.toFixed(0)}%`;
+        });
 
         xhr.onload = () => {
             if (xhr.status != 200) {

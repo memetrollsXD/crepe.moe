@@ -36,6 +36,7 @@ export default async function displayAPI(req: Request, res: Response) {
         // Check if file is blacklisted
         if (upload.takedown.status) {
             res.status(451).send(upload.takedown.reason || "Content is unavailable");
+	    return;
         }
 
         res.setHeader('Content-Disposition', `attachment; filename="${upload.file.name}"`);

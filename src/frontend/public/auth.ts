@@ -28,7 +28,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 auth.onAuthStateChanged((u: AuthState) => {
-    if (u) {
+    if (u && !u.isAnonymous) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
         

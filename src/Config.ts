@@ -1,6 +1,8 @@
 import fs from 'fs';
 import { resolve } from 'path';
 import { r } from './util';
+// Import config so ts-node-dev auto restarts on change
+import config from "../config.json";
 
 const DEFAULT_CONFIG = {
     // MongoDB

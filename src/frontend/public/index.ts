@@ -211,7 +211,6 @@ function onUpload(e: any) { // Fuck this i'm not finding the type
                 }
             }
         };
-        console.log(rsp);
         const url = `${window.location.origin}/${rsp.data.url.id}`;
         navigator.clipboard.writeText(url);
         uploadUrl.value = url;

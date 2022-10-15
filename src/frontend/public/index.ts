@@ -28,7 +28,6 @@ auth.onAuthStateChanged((u: AuthState) => {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
         currentUser = u;
-        console.log(u);
     } else {
         // User is signed out
         // Log in anonymously
@@ -210,7 +209,6 @@ function onUpload(e: any) { // Fuck this i'm not finding the type
                 }
             }
         };
-        console.log(rsp);
         const url = `${window.location.origin}/${rsp.data.url.id}`;
         navigator.clipboard.writeText(url);
         uploadUrl.value = url;

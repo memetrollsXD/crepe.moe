@@ -27,7 +27,7 @@ export default async function run(req: Request, res: Response) {
         }
 
         new Content(file, req.body).save(req.ip).then((saved: SavedContent) => {
-            c.log(`${saved._id} uploaded by ${req.ip}`);
+            c.log(`${saved.uploadId} uploaded by ${req.ip}`);
             res.send(<UploadRsp>{
                 success: true,
                 message: "OK",

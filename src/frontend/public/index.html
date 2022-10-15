@@ -8,8 +8,11 @@
     <meta property="og:description" content="{{STATIC_SLOGAN}}" />
     <meta name="theme-color" content="#161444">
     <link rel="stylesheet" href="index.css">
-    <script src="index.js" defer type="module"></script>
     <script src="fa/js/all.min.js" defer></script>
+    <script type="module" defer>
+        import { loadModule } from 'https://klesun.github.io/ts-browser/src/ts-browser.js';
+        loadModule('./index.ts');
+    </script>
 </head>
 
 <body>
@@ -37,7 +40,7 @@
     </form>
     <hr>
     <div id="uploads"></div>
-    <footer><a href="/">Home</a> | <a href="/privacy/">Privacy Policy</a> | <a
+    <footer><a href="/">Home</a> | <a href="/privacy/">Privacy Policy</a> | <a href="/auth">Login</a> | <a
             href="https://github.com/memetrollsXD/crepe.moe">&#10084; GitHub</a></footer>
 </body>
 

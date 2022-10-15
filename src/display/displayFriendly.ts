@@ -43,11 +43,12 @@ export default async function displayFriendly(req: Request, res: Response) {
             cdn: `https://${Config.DOMAIN_NAME}/c/${upload._id}`,
             title: upload.file.name,
             preview: previewType,
-            timestamp: new Date(upload.timestamp).toLocaleString(),
-            views: upload.views.toString()
+            timestamp: new Date(upload.timestamp!).toLocaleString(),
+            views: upload.views!.toString(),
+            ownerid: upload.ownerUid ?? ""
         });
 
-        upload.takedown.status ? res.status(451).send(new Template(r(`../frontend/templates/takedown.html`), { reason: upload.takedown.reason }).render()) : res.send(page.render());
+        upload.takedown!.status ? res.status(451).send(new Template(r(`../frontend/templates/takedown.html`), { reason: upload.takedown!.reason }).render()) : res.send(page.render());
     } catch (e) {
         c.error(e as unknown as Error);
         res.status(500).send(`An error has occured. Please contact info@${Config.DOMAIN_NAME}`);

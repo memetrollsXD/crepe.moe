@@ -15,6 +15,7 @@ export default class Template {
             STATIC_SLOGAN: Config.SLOGAN,
             STATIC_DOMAIN_NAME: Config.DOMAIN_NAME,
             STATIC_MAX_FILE_MB: Config.MAX_FILE_MB,
+            STATIC_DISCORD_CLIENT_ID: Config.DISCORD_CLIENT_ID,
             ...fields
         };
     }

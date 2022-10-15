@@ -7,48 +7,28 @@ import { UploadedFile } from 'express-fileupload';
 import Logger from './Logger';
 import Content, { SavedContent } from './display/Content';
 import Config from './Config';
+import { UploadRsp } from './frontend/public/SharedTypes';
 const c = new Logger("Upload");
-
-interface UploadRsp {
-    success: boolean;
-    message: string;
-    timestamp: number;
-    data: {
-        url: {
-            full: string;
-            short: string;
-            cdn: string;
-            id: string;
-        },
-        meta: {
-            name: string;
-            size: number;
-            encoding: string;
-            tempFilePath: string;
-            truncated: boolean;
-            mimetype: string;
-            md5: string;
-        }
-    }
-}
 
 export default async function run(req: Request, res: Response) {
     try {
+        console.debug(req.body);
+        console.debug(req.files);
         if (!req.files) {
             res.status(400).send('No file uploaded');
             return;
         }
-        const file = req.files.file as UploadedFile;
 
         // If the file size exceeds 512MB, reject it
+        const file = req.files.file as UploadedFile;
         if (file.size > Config.MAX_FILE_MB * 1024 ** 2) {
             res.status(400).send('File is too large');
             return;
         }
 
-        new Content(file).save(req.ip).then((saved: SavedContent) => {
+        new Content(file, req.body).save(req.ip).then((saved: SavedContent) => {
             c.log(`${saved._id} uploaded by ${req.ip}`);
-            res.send({
+            res.send(<UploadRsp>{
                 success: true,
                 message: "OK",
                 timestamp: Date.now(),
@@ -57,11 +37,12 @@ export default async function run(req: Request, res: Response) {
                         full: `https://${Config.DOMAIN_NAME}/${saved._id}/${saved.file.name}`,
                         short: `https://${Config.DOMAIN_NAME}/${saved._id}`,
                         cdn: `https://${Config.DOMAIN_NAME}/c/${saved._id}`,
-                        id: saved._id
+                        id: saved.uploadId
                     },
-                    meta: saved.file
-                }
-            } as UploadRsp);
+                    meta: saved.file,
+                    ownerUid: saved.ownerUid
+                },
+            });
         });
     } catch (e) {
         c.error(e as unknown as Error);

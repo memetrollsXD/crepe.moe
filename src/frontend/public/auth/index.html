@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <title>Login - {{STATIC_DOMAIN_NAME}}</title>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:site_name" content="{{STATIC_DOMAIN_NAME}}" />
+    <meta property="og:title" content="{{STATIC_DOMAIN_NAME}}" />
+    <meta property="og:description" content="{{STATIC_SLOGAN}}" />
+    <meta name="theme-color" content="#161444">
+    <script>
+        function redirectLogin() {
+            const redirect = "https://discord.com/oauth2/authorize?client_id={{STATIC_DISCORD_CLIENT_ID}}&response_type=token&scope=identify%20email";
+            setTimeout(function () { document.location.href = redirect }, 100);
+        }
+    </script>
+    <script type="module" defer>
+        import { loadModule } from 'https://klesun.github.io/ts-browser/src/ts-browser.js';
+        loadModule('./auth.ts');
+    </script>
+    <link rel="stylesheet" href="/index.css">
+</head>
+
+<body>
+    <h2 onclick="window.location.href = '/'" style="cursor: pointer;">{{STATIC_DOMAIN_NAME}}</h2>
+    <p class="lead">{{STATIC_SLOGAN}}</p>
+
+    <form id="file-upload-form" class="uploader-other">
+        <div class="container-main">
+            <div id="start">
+                <button id="discordBtn">
+                    <svg class="svg-inline--fa fa-discord fa-w-14" aria-hidden="true" focusable="false"
+                        data-prefix="fa-brands" data-icon="discord" role="img" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512" data-fa-i2svg="">
+                        <path fill="currentColor"
+                            d="M297.2 243.2c0 15.62-11.52 28.42-26.11 28.42-14.34 0-26.11-12.8-26.11-28.42s11.52-28.42 26.11-28.42c14.59 0 26.11 12.8 26.11 28.42zm-119.6-28.42c-14.59 0-26.11 12.8-26.11 28.42s11.78 28.42 26.11 28.42c14.59 0 26.11-12.8 26.11-28.42 .256-15.62-11.52-28.42-26.11-28.42zM448 52.74V512c-64.49-56.99-43.87-38.13-118.8-107.8l13.57 47.36H52.48C23.55 451.6 0 428 0 398.8V52.74C0 23.55 23.55 0 52.48 0h343C424.4 0 448 23.55 448 52.74zm-72.96 242.7c0-82.43-36.86-149.2-36.86-149.2-36.86-27.65-71.94-26.88-71.94-26.88l-3.584 4.096c43.52 13.31 63.74 32.51 63.74 32.51-60.81-33.33-132.2-33.33-191.2-7.424-9.472 4.352-15.1 7.424-15.1 7.424s21.25-20.22 67.33-33.54l-2.56-3.072s-35.07-.768-71.94 26.88c0 0-36.86 66.82-36.86 149.2 0 0 21.5 37.12 78.08 38.91 0 0 9.472-11.52 17.15-21.25-32.51-9.728-44.8-30.21-44.8-30.21 3.766 2.636 9.976 6.053 10.5 6.4 43.21 24.2 104.6 32.13 159.7 8.96 8.96-3.328 18.94-8.192 29.44-15.1 0 0-12.8 20.99-46.34 30.46 7.68 9.728 16.9 20.74 16.9 20.74 56.58-1.792 78.34-38.91 78.34-38.91z">
+                        </path>
+                    </svg>
+                    Login with Discord
+                </button>
+            </div>
+        </div>
+    </form>
+    <footer><a href="/">Home</a> | <a href="/privacy/">Privacy Policy</a> | <a
+            href="https://github.com/memetrollsXD/crepe.moe">&#10084; GitHub</a></footer>
+</body>
+
+</html>

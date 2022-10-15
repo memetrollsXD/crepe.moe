@@ -1,21 +1,15 @@
 import fs from 'fs';
-import Database from './db/Database';
-import { SavedContent } from './display/Content';
 import http from 'http';
 import { resolve } from 'path';
+import Upload from './db/Upload';
 
 export function r(...args: string[]) {
     return fs.readFileSync(resolve(__dirname, ...args)).toString();
 }
 
-async function getUploads() {
-    return await JSON.parse(fs.readFileSync('./src/uploads.json', 'utf8'));
-}
-
-export async function getUploadByUID(uid: string): Promise<SavedContent | null> {
-    const db = Database.getInstance();
-
-    return await db.get("uploads", { _id: uid }) as SavedContent | null;
+export async function getUploadByUID(uid: string) {
+    const record = await Upload.findOne({ uploadId: uid });
+    return record;
 }
 
 export function toSize(bytes: number) {

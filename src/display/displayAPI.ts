@@ -6,6 +6,7 @@ import { Request, Response } from 'express';
 import fs from 'fs';
 import { resolve } from 'path';
 import Config from '../Config';
+import Upload from '../db/Upload';
 import Logger from '../Logger';
 import { getUploadByUID } from '../util';
 const c = new Logger("API");
@@ -28,9 +29,13 @@ export default async function displayAPI(req: Request, res: Response) {
             return;
         }
         c.log(`${req.originalUrl.split('?')[0]} requested by ${req.ip}`);
+
         // Update view count
-        upload.views!++;
-        upload.save();
+        await Upload.findOneAndUpdate({ uploadId: upload.uploadId }, {
+            $inc: {
+                views: 1
+            }
+        });
 
         // Check if file is blacklisted
         if (upload.takedown!.status) {

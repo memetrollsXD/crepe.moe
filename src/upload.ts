@@ -12,8 +12,6 @@ const c = new Logger("Upload");
 
 export default async function run(req: Request, res: Response) {
     try {
-        console.debug(req.body);
-        console.debug(req.files);
         if (!req.files) {
             res.status(400).send('No file uploaded');
             return;

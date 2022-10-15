@@ -27,20 +27,20 @@ export default async function displayFriendly(req: Request, res: Response) {
         let previewType: string = "";
         switch (true) {
             case /^image\//.test(upload.file.mimetype):
-                previewType = `<img src="https://${Config.DOMAIN_NAME}/c/${upload._id}" alt="${upload.file.name}" />`;
+                previewType = `<img src="https://${Config.DOMAIN_NAME}/c/${upload.uploadId}" alt="${upload.file.name}" />`;
                 break;
             case /^video\//.test(upload.file.mimetype):
-                previewType = `<video src="https://${Config.DOMAIN_NAME}/c/${upload._id}" controls></video>`;
+                previewType = `<video src="https://${Config.DOMAIN_NAME}/c/${upload.uploadId}" controls></video>`;
                 break;
             case /^audio\//.test(upload.file.mimetype):
-                previewType = `<audio src="https://${Config.DOMAIN_NAME}/c/${upload._id}" controls />`;
+                previewType = `<audio src="https://${Config.DOMAIN_NAME}/c/${upload.uploadId}" controls />`;
                 break;
             default:
                 previewType = `<span id="file-upload-btn" class="btn btn-primary" onclick="window.location.href='https://${Config.DOMAIN_NAME}/c/${upload.saveAs.name}'">Download</span>`;
         }
 
         const page = new Template(r(`../frontend/templates/view.html`), {
-            cdn: `https://${Config.DOMAIN_NAME}/c/${upload._id}`,
+            cdn: `https://${Config.DOMAIN_NAME}/c/${upload.uploadId}`,
             title: upload.file.name,
             preview: previewType,
             timestamp: new Date(upload.timestamp!).toLocaleString(),

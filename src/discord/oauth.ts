@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import Config from "../Config";
 import FirebaseManager from "../db/FirebaseManager";
 import { GetUserRequest } from "./DiscordAPI";
+import { resolve as r } from "path";
+import Template from "../template";
 
 interface OAuthResponse {
     token_type: "Bearer"; // Always Bearer
@@ -33,22 +35,10 @@ export default async function handle(req: Request, res: Response) {
     else return res.status(500).send("Error generating token");
 
     // Authenticated - Send to client
-    res.send(`
-        <script type="module">
-            import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js';
-        
-            import { getAuth, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/9.12.1/firebase-auth.js';
+    const template = new Template(r(__dirname, "./onAuthenticated.js"), {
+        FIREBASE_CONFIG: JSON.stringify(Config.FIREBASE_PUBLIC_CONFIG),
+        TOKEN: token
+    });
 
-            const firebaseConfig = ${JSON.stringify(Config.FIREBASE_PUBLIC_CONFIG)}; // Valid JSON
-            
-            // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-
-            // Sign in with custom token
-            signInWithCustomToken(auth, "${token}").then(() => {
-                window.location.href = "/auth";
-            });
-        </script>
-    `);
+    res.send(`<script type="module">${template.render()}</script>`);
 }

@@ -62,4 +62,8 @@ export default class FirebaseManager {
             return decoded?.uid === uid || decoded?.admin === true;
         }
     }
+
+    public async updateUser(uid: string, query: Parameters<fadmin.auth.BaseAuth["updateUser"]>[1]) {
+        return await this.app.auth().updateUser(uid, query);
+    }
 }

@@ -29,6 +29,7 @@ auth.onAuthStateChanged((u: AuthState) => {
         // https://firebase.google.com/docs/reference/js/firebase.User
         currentUser = u;
         console.log(u);
+        if (!u.isAnonymous) document.querySelector<HTMLAnchorElement>("#loginBtn")!.innerText = "Account";
     } else {
         // User is signed out
         // Log in anonymously

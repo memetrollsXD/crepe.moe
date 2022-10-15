@@ -28,7 +28,7 @@ export default async function handle(req: Request, res: Response) {
     const userReq = new GetUserRequest();
     const discordUser = (await userReq.get(query.access_token)).data;
     const user = await FirebaseManager.Instance.findUser(discordUser.email, true, { displayName: discordUser.username });
-    let token;
+    let token: string;
     if (user && user.uid) token = await FirebaseManager.Instance.generateToken(user.uid);
     else return res.status(500).send("Error generating token");
 

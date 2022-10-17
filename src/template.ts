@@ -4,6 +4,7 @@
  */
 type stringObject = { [key: string]: string };
 import fs from 'fs';
+import { resolve as r } from 'path';
 import Config from './Config';
 import { toSize } from './util';
 
@@ -18,6 +19,7 @@ export default class Template {
             STATIC_DISCORD_CLIENT_ID: Config.DISCORD_CLIENT_ID,
             ...fields
         };
+        if (!this.file.includes("footer.html")) this.fields["STATIC_FOOTER"] = new Template(r(__dirname, "./frontend/templates/footer.html")).render();
     }
     public render(): string {
         let template = fs.readFileSync(this.file, 'utf8');

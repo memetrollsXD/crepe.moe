@@ -8,18 +8,19 @@ import fileUpload from 'express-fileupload';
 import fs from 'fs';
 import { resolve } from 'path';
 import upload from './upload';
-import oauth from './discord/oauth';
+import oauth from './auth/oauth';
 import admin from "./admin";
 import displayAPI from './display/displayAPI';
 import displayFriendly from './display/displayFriendly';
 import Config from './Config';
+import AuthManager from './auth/AuthManager';
 
 const app = express();
 app.use(fileUpload());
 app.use(express.json());
 
 app.post('/upload', (req, res) => upload(req, res));
-app.get('/oauth/', (req, res) => oauth(req, res));
+app.all('/oauth', (req, res) => oauth(req, res));
 app.post('/admin', (req, res) => admin(req, res));
 
 app.get('/c/:content', (req, res) => displayAPI(req, res));

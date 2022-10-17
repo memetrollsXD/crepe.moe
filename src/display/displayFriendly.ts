@@ -67,6 +67,14 @@ async function processStatic(req: Request, res: Response) {
 
     const template = new Template(filePath).render();
 
-    res.setHeader("Content-Type", "text/html");
+    const scripts = [".js", ".ts"]
+    scripts.forEach(s => {
+        if (filePath.endsWith(s)) {
+            res.type("text/javascript");
+            return;
+        } else {
+            res.type("text/html");
+        }
+    });
     res.send(template);
 }

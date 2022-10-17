@@ -1,11 +1,12 @@
-'use strict';
 // @ts-ignore
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
 // @ts-ignore
 import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
 // @ts-ignore
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-auth.js";
-import { AuthState } from "./SharedTypes";
+import _jwtDecode from "./jwt-decode";
+import { UploadRsp } from "./SharedTypes";
+// @ts-ignore
+const jwtDecode = _jwtDecode as (token: string) => { uid: string, displayName: string };
 
 const firebaseConfig = {
     apiKey: "AIzaSyDoSUHACvuXdv5h7NAXcW3DB-tL4kpIElI",
@@ -20,22 +21,32 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-const auth = getAuth(app);
-let currentUser: AuthState | null = null;
 
-auth.onAuthStateChanged((u: AuthState) => {
-    if (u) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        currentUser = u;
-        console.log(u);
-        if (!u.isAnonymous) document.querySelector<HTMLAnchorElement>("#loginBtn")!.innerText = "Account";
-    } else {
-        // User is signed out
-        // Log in anonymously
-        signInAnonymously(auth);
+// Auth
+function getCookie(name: string) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
     }
-});
+    return null;
+}
+
+function setCookie(name: string, value: string, days: number = 365) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 ** 2 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+const cookie = getCookie("_CMOEAUTHTOKEN");
+let token: { uid: string, displayName: string } | null = null;
+if (cookie) token = jwtDecode(cookie);
 
 // Check template.ts (Server Side Rendering)
 const FILE_SIZE_LIMIT = Number("{{STATIC_MAX_FILE_MB}}") * 1024 ** 2;
@@ -163,9 +174,8 @@ function onUpload(e: any) { // Fuck this i'm not finding the type
     // Make a POST request with the file
     const formData = new FormData();
     formData.append('file', file);
-    if (currentUser) {
-        formData.append('uid', currentUser.uid);
-        formData.append('token', currentUser.accessToken);
+    if (token) {
+        formData.append('uid', token.uid);
     }
     const xhr = new XMLHttpRequest();
     uploads.appendChild(upload);
@@ -182,35 +192,19 @@ function onUpload(e: any) { // Fuck this i'm not finding the type
             ext: file?.name.split(".").pop(),
             size: file?.size,
             status: xhr.status,
-            ownerUid: currentUser?.uid,
+            ownerUid: token?.uid,
         });
         if (xhr.status != 200) {
             console.error(`Error ${xhr.status}: ${xhr.statusText}, ${xhr.responseText}`);
             showResponse(`Error ${xhr.status}: ${xhr.statusText}, ${xhr.responseText}`);
             return;
         }
-        const rsp = JSON.parse(xhr.responseText) as {
-            success: boolean;
-            message: string;
-            timestamp: number;
-            data: {
-                url: {
-                    full: string;
-                    short: string;
-                    cdn: string;
-                    id: string;
-                },
-                meta: {
-                    name: string;
-                    size: number;
-                    encoding: string;
-                    tempFilePath: string;
-                    truncated: boolean;
-                    mimetype: string;
-                    md5: string;
-                }
-            }
-        };
+        const rsp = JSON.parse(xhr.responseText) as UploadRsp;
+
+        if (rsp.newAccountToken) {
+            setCookie('_CMOEAUTHTOKEN', rsp.newAccountToken);
+        }
+
         const url = `${window.location.origin}/${rsp.data.url.id}`;
         navigator.clipboard.writeText(url);
         uploadUrl.value = url;

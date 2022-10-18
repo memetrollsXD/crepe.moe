@@ -1,8 +1,6 @@
 import fs from 'fs';
 import { resolve } from 'path';
 import { generateRandomString, r } from './util';
-// Import config so ts-node-dev auto restarts on change
-import config from "../config.json";
 
 const DEFAULT_CONFIG = {
     // MongoDB
@@ -18,18 +16,6 @@ const DEFAULT_CONFIG = {
     SLOGAN: "Free temporary file hosting for everyone!",
 
     // Firebase
-    FIREBASE_SERVICE_ACCOUNT: {
-        type: "",
-        project_id: "",
-        private_key_id: "",
-        private_key: "",
-        client_email: "",
-        client_id: "",
-        auth_uri: "",
-        token_uri: "",
-        auth_provider_x509_cert_url: "",
-        client_x509_cert_url: "",
-    },
     FIREBASE_PUBLIC_CONFIG: {
         apiKey: "AIzaSyDoSUHACvuXdv5h7NAXcW3DB-tL4kpIElI",
         authDomain: "crepemoe.firebaseapp.com",
@@ -81,7 +67,6 @@ export default class Config {
     public static SLOGAN = Config.config.SLOGAN;
     public static HTTP_HOST: string = Config.config.HTTP_HOST;
     public static HTTP_PORT: number = Config.config.HTTP_PORT;
-    public static FIREBASE_SERVICE_ACCOUNT: typeof DEFAULT_CONFIG.FIREBASE_SERVICE_ACCOUNT = Config.config.FIREBASE_SERVICE_ACCOUNT;
     public static FIREBASE_PUBLIC_CONFIG: typeof DEFAULT_CONFIG.FIREBASE_PUBLIC_CONFIG = Config.config.FIREBASE_PUBLIC_CONFIG;
     public static DISCORD_CLIENT_ID = Config.config.DISCORD_CLIENT_ID;
     public static readonly JWT_SECRET = Config.config.JWT_SECRET;

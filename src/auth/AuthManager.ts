@@ -1,6 +1,8 @@
-import { SignJWT, jwtVerify, jwtDecrypt } from "jose";
+import { SignJWT, jwtVerify } from "jose";
+import jwtDecode from "jwt-decode";
 import Config from "../Config";
 import User from "../db/User";
+import { CrepeToken } from "../frontend/public/SharedTypes";
 
 type AsyncReturnType<T extends (...args: any) => any> =
     T extends (...args: any) => Promise<infer U> ? U :
@@ -47,15 +49,23 @@ export default class AuthManager {
      * @returns True if the token is valid, false otherwise
      */
     public async verifyToken(token: string, uid: string) {
-        const { payload } = await jwtVerify(token, this.key, {
-            issuer: Config.DOMAIN_NAME,
-            audience: Config.DOMAIN_NAME
-        });
+        try {
+            const { payload } = await jwtVerify(token, this.key);
 
-        return payload.uid === uid;
+            return payload.uid === uid.toString();
+        } catch (e) {
+            return false;
+        }
     }
 
-    public async decryptToken(token: string) {
-        return await jwtDecrypt(token, this.key);
+    public async decryptToken(token: string): Promise<CrepeToken | null> {
+        let result = null;
+        try {
+            result = await jwtDecode(token);
+        } catch (e) {
+            result = null;
+        } finally {
+            return result;
+        }
     }
 }

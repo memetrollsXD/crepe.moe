@@ -25,7 +25,7 @@ export default async function handle(req: Request, res: Response) {
 
     const userReq = new GetUserRequest();
     const discordUser = (await userReq.get(query.access_token)).data;
-    const user = await User.findUser(discordUser.id, true, { displayName: discordUser.username, discordToken: query.access_token, isAnonymous: false });
+    const user = await User.findUser(discordUser.id, true, { displayName: discordUser.username, email: discordUser.email, isAnonymous: false });
     if (!user) return res.status(500).send("Failed to create user");
     const token = await AuthManager.Instance.generateToken(user);
 

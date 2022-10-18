@@ -16,7 +16,7 @@ class User {
     public updatedAt!: Date;
 
     @prop({ required: true })
-    public discordToken!: string;
+    public email!: string;
 
     @prop({ required: true, allowMixed: 0 })
     public premiumLevel!: PremiumLevel;
@@ -24,14 +24,15 @@ class User {
     @prop({ required: true })
     public isAnonymous!: boolean;
 
-    public static async findUser(this: ReturnModelType<typeof User>, discordId: string, autoCreate = false, acOptions?: { displayName?: string, discordToken: string, isAnonymous: boolean }) {
+    public static async findUser(this: ReturnModelType<typeof User>, discordId: string, autoCreate = false, acOptions?: { displayName?: string, email: string, isAnonymous: boolean }) {
         const user = await this.findOne({ discordId });
         if (user) {
             user.updateOne({
                 updatedAt: new Date(),
-                discordToken: acOptions?.discordToken ?? user.discordToken,
+                email: acOptions?.email ?? user.email,
                 displayName: acOptions?.displayName ?? user.displayName,
-                discordId: discordId 
+                discordId: discordId,
+                isAnonymous: acOptions?.isAnonymous ?? user.isAnonymous
             }, { upsert: true });
             return user;
         }
@@ -43,8 +44,9 @@ class User {
             displayName: acOptions?.displayName || discordId,
             createdAt: new Date(),
             updatedAt: new Date(),
-            discordToken: acOptions!.discordToken,
-            premiumLevel: PremiumLevel.NONE
+            email: acOptions!.email,
+            premiumLevel: PremiumLevel.NONE,
+            isAnonymous: acOptions!.isAnonymous
         });
     }
 }

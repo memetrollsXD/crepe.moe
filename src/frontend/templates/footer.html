@@ -18,6 +18,7 @@
     const cookie = getCookie("_CMOEAUTHTOKEN");
     let token;
     if (cookie) token = jwtDecode(cookie);
+    console.log(token)
 
-    if (token) document.querySelector("#loginBtn").innerText = token.displayName;
+    if (token && !token.isAnonymous) document.querySelector("#loginBtn").innerText = token.displayName;
 </script>

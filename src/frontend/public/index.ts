@@ -1,4 +1,6 @@
 // @ts-ignore
+import { CrepeToken, getCookie, setCookie } from "./SharedTypes";
+// @ts-ignore
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
 // @ts-ignore
 import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
@@ -6,7 +8,7 @@ import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.12.
 import _jwtDecode from "./jwt-decode";
 import { UploadRsp } from "./SharedTypes";
 // @ts-ignore
-const jwtDecode = _jwtDecode as (token: string) => { uid: string, displayName: string };
+const jwtDecode = _jwtDecode as (token: string) => CrepeToken;
 
 const firebaseConfig = {
     apiKey: "AIzaSyDoSUHACvuXdv5h7NAXcW3DB-tL4kpIElI",
@@ -23,29 +25,9 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
 // Auth
-function getCookie(name: string) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
-
-function setCookie(name: string, value: string, days: number = 365) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 ** 2 * 1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
 
 const cookie = getCookie("_CMOEAUTHTOKEN");
-let token: { uid: string, displayName: string } | null = null;
+let token: CrepeToken| null = null;
 if (cookie) token = jwtDecode(cookie);
 
 // Check template.ts (Server Side Rendering)

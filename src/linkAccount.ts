@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { CrepeToken } from "./public/SharedTypes";
-import AuthManager from "../auth/AuthManager";
-import User from "../db/User";
+import { CrepeToken } from "./frontend/public/SharedTypes";
+import AuthManager from "./auth/AuthManager";
+import User from "./db/User";
 
 interface LinkAccountReq {
     oldToken?: string;
@@ -13,8 +13,8 @@ export default async function run(req: Request, res: Response) {
 
     if (!body.oldToken || !body.newToken) return res.status(400).json({ success: false, message: "Missing token(s)" });
 
-    const oldToken = (await AuthManager.Instance.decryptToken(body.oldToken)).payload as unknown as CrepeToken;
-    const newToken = (await AuthManager.Instance.decryptToken(body.newToken)).payload as unknown as CrepeToken;
+    const oldToken = (await AuthManager.Instance.decryptToken(body.oldToken)) as unknown as CrepeToken;
+    const newToken = (await AuthManager.Instance.decryptToken(body.newToken)) as unknown as CrepeToken;
 
     if (!oldToken || !newToken) return res.status(400).json({ success: false, message: "Invalid token(s)" });
 
@@ -24,6 +24,11 @@ export default async function run(req: Request, res: Response) {
     if (!oldUser || !newUser) return res.status(400).json({ success: false, message: "Unknown account(s)" });
     if (oldUser._id === newUser._id) return res.status(400).json({ success: false, message: "Cannot link to the same account" });
 
+    const isOldTokenValid = await AuthManager.Instance.verifyToken(body.oldToken, oldUser._id);
+    const isNewTokenValid = await AuthManager.Instance.verifyToken(body.newToken, newUser._id);
+
+    if (!isOldTokenValid || !isNewTokenValid) return res.status(400).json({ success: false, message: "Invalid token signature(s)" });
+
     // Merge properties from new user to old user
     // This is generally stupid, but in this context we switch from an anonymous account to a normal one
     // We want to keep the old users uid because of past uploads
@@ -32,14 +37,14 @@ export default async function run(req: Request, res: Response) {
             discordId: newUser.discordId,
             displayName: newUser.displayName,
             updatedAt: new Date(),
-            discordToken: newUser.discordToken,
+            email: newUser.email,
             // Don't overwrite premium level
             isAnonymous: newUser.isAnonymous
         }
-    }, { upsert: true });
-
-    // Delete new user to keep the database clean
-    newUser.deleteOne();
+    }, { upsert: true }).then(() => {
+        // Delete new user to keep the database clean
+        newUser.deleteOne();
+    });
 
     res.send({ success: true, message: body.oldToken });
 }

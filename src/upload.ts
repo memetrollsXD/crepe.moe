@@ -7,7 +7,7 @@ import { UploadedFile } from 'express-fileupload';
 import Logger from './Logger';
 import Content, { SavedContent } from './display/Content';
 import Config from './Config';
-import { UploadRsp } from './frontend/public/SharedTypes';
+import { PremiumLevel, UploadRsp } from './frontend/public/SharedTypes';
 import User from './db/User';
 import AuthManager from './auth/AuthManager';
 const c = new Logger("Upload");
@@ -31,13 +31,18 @@ export default async function run(req: Request, res: Response) {
             displayName: "Anonymous",
             createdAt: new Date(),
             updatedAt: new Date(),
-            discordToken: ""
+            email: "anonymous@crepe.moe",
+            premiumLevel: PremiumLevel.NONE,
+            isAnonymous: true
         });
-        if (!req.body.token) {
+        
+        if (!req.body.uid) {
             tmpUser.save();
         }
 
-        new Content(file, req.body).save(req.ip).then(async (saved: SavedContent) => {
+        const authData = req.body.uid ? req.body : { uid: tmpUser._id };
+
+        new Content(file, authData).save(req.ip).then(async (saved: SavedContent) => {
             c.log(`${saved.uploadId} uploaded by ${req.ip}`);
             res.send(<UploadRsp>{
                 success: true,
@@ -53,7 +58,7 @@ export default async function run(req: Request, res: Response) {
                     meta: saved.file,
                     ownerUid: saved.ownerUid
                 },
-                newAccountToken: req.body.token ? undefined : await AuthManager.Instance.generateToken(tmpUser)
+                newAccountToken: req.body.uid ? undefined : await AuthManager.Instance.generateToken(tmpUser)
             });
         });
     } catch (e) {

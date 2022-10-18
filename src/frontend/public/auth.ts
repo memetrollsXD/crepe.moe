@@ -1,7 +1,8 @@
+import { getCookie, delCookie, CrepeToken } from "./SharedTypes";
 // @ts-ignore
 import _jwtDecode from "./jwt-decode";
 // @ts-ignore
-const jwtDecode = _jwtDecode as (token: string) => { uid: string, displayName: string };
+const jwtDecode = _jwtDecode as (token: string) => CrepeToken;
 
 const discordBtn = document.querySelector<HTMLButtonElement>("#discordBtn");
 const body = document.querySelector<HTMLDivElement>("#start");
@@ -11,26 +12,11 @@ discordBtn?.addEventListener("click", () => {
     redirectLogin();
 });
 
-function getCookie(name: string) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
-
-function delCookie(name: string) {
-    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}
-
 const cookie = getCookie("_CMOEAUTHTOKEN");
 let token;
 if (cookie) token = jwtDecode(cookie);
 
-if (token) {
+if (token && !token.isAnonymous) {
     // User is signed in
 
     const p = document.createElement("p");

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import FirebaseManager from "./db/FirebaseManager";
+import AuthManager from "./auth/AuthManager";
 import Upload from "./db/Upload";
 import { getUploadByUID } from "./util";
 
@@ -29,10 +29,9 @@ export default async function run(req: Request, res: Response) {
     if (!entry.ownerUid) return res.status(400).send("Upload has no owner");
 
     // Authentication
-    const verified = await FirebaseManager.Instance.verifyToken(body.token, entry.ownerUid);
+    const verified = await AuthManager.Instance.verifyToken(body.token, entry.ownerUid);
     if (!verified) return res.status(401).send("Invalid token");
 
-    // Use + to convert to number
     switch (type) {
         case ActionType.Delete:
             entry.del().then(() => {

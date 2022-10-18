@@ -7,13 +7,13 @@ import { UploadedFile } from 'express-fileupload';
 import Logger from './Logger';
 import Content, { SavedContent } from './display/Content';
 import Config from './Config';
-import { UploadRsp } from './frontend/public/SharedTypes';
+import { PremiumLevel, UploadRsp } from './frontend/public/SharedTypes';
+import User from './db/User';
+import AuthManager from './auth/AuthManager';
 const c = new Logger("Upload");
 
 export default async function run(req: Request, res: Response) {
     try {
-        console.debug(req.body);
-        console.debug(req.files);
         if (!req.files) {
             res.status(400).send('No file uploaded');
             return;
@@ -26,7 +26,23 @@ export default async function run(req: Request, res: Response) {
             return;
         }
 
-        new Content(file, req.body).save(req.ip).then((saved: SavedContent) => {
+        const tmpUser = new User({
+            discordId: 0,
+            displayName: "Anonymous",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            email: "anonymous@crepe.moe",
+            premiumLevel: PremiumLevel.NONE,
+            isAnonymous: true
+        });
+        
+        if (!req.body.uid) {
+            tmpUser.save();
+        }
+
+        const authData = req.body.uid ? req.body : { uid: tmpUser._id };
+
+        new Content(file, authData).save(req.ip).then(async (saved: SavedContent) => {
             c.log(`${saved.uploadId} uploaded by ${req.ip}`);
             res.send(<UploadRsp>{
                 success: true,
@@ -42,6 +58,7 @@ export default async function run(req: Request, res: Response) {
                     meta: saved.file,
                     ownerUid: saved.ownerUid
                 },
+                newAccountToken: req.body.uid ? undefined : await AuthManager.Instance.generateToken(tmpUser)
             });
         });
     } catch (e) {

@@ -2,10 +2,12 @@
 // @ts-ignore
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
 // @ts-ignore
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-auth.js";
-// @ts-ignore
 import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
-import { AuthState } from "./SharedTypes";
+import { CrepeToken, getCookie } from "./SharedTypes"; 
+// @ts-ignore
+import _jwtDecode from "./jwt-decode";
+// @ts-ignore
+const jwtDecode = _jwtDecode as (token: string) => CrepeToken;
 
 const adminButtons = document.querySelector<HTMLDivElement>(".admin-buttons")!;
 const firebaseConfig = {
@@ -21,35 +23,37 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-const auth = getAuth(app);
 
 logEvent(analytics, "file_view", {
     id: window.location.pathname.split("/")[1]
 });
 
-auth.onAuthStateChanged((u: AuthState) => {
-    if (u) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
+const cookie = getCookie("_CMOEAUTHTOKEN");
+let token: CrepeToken | null = null;
+if (cookie) token = jwtDecode(cookie);
 
-        // Display / hide admin icons based on user id
-        const ownerUid = document.head.querySelector<HTMLMetaElement>("meta[property='cmoe:ownerid']")?.content;
+if (token) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/firebase.User
 
-        if (ownerUid && u.uid === ownerUid) {
-            adminButtons.style.display = "block";
-        }
+    // Display / hide admin icons based on user id
+    const ownerUid = document.head.querySelector<HTMLMetaElement>("meta[property='cmoe:ownerid']")?.content;
 
-        // Add event listeners to admin icons
-        // const dmcaReq = document.querySelector<HTMLAnchorElement>(".dmca-req")!;
-        const editReq = document.querySelector<HTMLAnchorElement>(".edit-req")!;
-        const deleteReq = document.querySelector<HTMLAnchorElement>(".delete-req")!;
-        // dmcaReq.addEventListener("click", onDMCAReq);
-        editReq.addEventListener("click", onEditReq);
-        deleteReq.addEventListener("click", onDeleteReq);
-    } else {
-        adminButtons.remove();
+    if (ownerUid && token.uid === ownerUid) {
+        adminButtons.style.display = "block";
     }
-});
+
+    // Add event listeners to admin icons
+    // const dmcaReq = document.querySelector<HTMLAnchorElement>(".dmca-req")!;
+    const editReq = document.querySelector<HTMLAnchorElement>(".edit-req")!;
+    const deleteReq = document.querySelector<HTMLAnchorElement>(".delete-req")!;
+    // dmcaReq.addEventListener("click", onDMCAReq);
+    editReq.addEventListener("click", onEditReq);
+    deleteReq.addEventListener("click", onDeleteReq);
+} else {
+    adminButtons.remove();
+}
+
 
 // function onDMCAReq(e: MouseEvent) {
 //     e.preventDefault();
@@ -91,7 +95,7 @@ function onEditReq(e: MouseEvent) {
 
                 XHR({
                     type: ActionType.Edit,
-                    token: await auth.currentUser!.getIdToken(true),
+                    token: cookie!,
                     data: { title }
                 });
                 window.location.reload();
@@ -108,7 +112,7 @@ function onDeleteReq(e: MouseEvent) {
                 label: "Delete", callback: async (e: MouseEvent) => {
                     XHR({
                         type: ActionType.Delete,
-                        token: await auth.currentUser!.getIdToken(true),
+                        token: cookie!,
                         data: {}
                     });
                     window.location.reload();

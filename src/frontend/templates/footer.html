@@ -1,0 +1,24 @@
+<footer><a href="/">Home</a> | <a href="/privacy/">Privacy Policy</a> | <a href="/auth" id="loginBtn">Login</a> | <a
+        href="https://github.com/memetrollsXD/crepe.moe">&#10084; GitHub</a></footer>
+
+<script type="module">
+    import jwtDecode from "/jwt-decode.ts";
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    const cookie = getCookie("_CMOEAUTHTOKEN");
+    let token;
+    if (cookie) token = jwtDecode(cookie);
+    console.log(token)
+
+    if (token && !token.isAnonymous) document.querySelector("#loginBtn").innerText = token.displayName;
+</script>

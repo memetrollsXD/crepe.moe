@@ -3,7 +3,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
 // @ts-ignore
 import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
-import { CrepeToken, getCookie } from "./SharedTypes"; 
+import { CrepeToken, getCookie, PremiumLevel } from "./SharedTypes"; 
 // @ts-ignore
 import _jwtDecode from "./jwt-decode";
 // @ts-ignore
@@ -41,12 +41,17 @@ if (token) {
 
     if (ownerUid && token.uid === ownerUid) {
         adminButtons.style.display = "block";
+        if (token.premiumLevel >= PremiumLevel.PREMIUM) {
+            const premiumButtons = document.querySelectorAll<HTMLLIElement>(".premium-buttons");
+            premiumButtons.forEach(b => b.style.display = "block");
+        }
     }
 
     // Add event listeners to admin icons
     // const dmcaReq = document.querySelector<HTMLAnchorElement>(".dmca-req")!;
     const editReq = document.querySelector<HTMLAnchorElement>(".edit-req")!;
     const deleteReq = document.querySelector<HTMLAnchorElement>(".delete-req")!;
+    const idReq = document.querySelector<HTMLAnchorElement>(".id-req")!;
     // dmcaReq.addEventListener("click", onDMCAReq);
     editReq.addEventListener("click", onEditReq);
     deleteReq.addEventListener("click", onDeleteReq);

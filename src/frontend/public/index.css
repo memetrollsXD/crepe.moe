@@ -471,3 +471,7 @@ video {
     display: flex;
     justify-content: space-between;
 }
+
+.premium-button {
+    display: none;
+}

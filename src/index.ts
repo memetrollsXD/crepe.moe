@@ -12,6 +12,7 @@ import upload from './upload';
 import oauth from './auth/oauth';
 import admin from './admin';
 import linkAccount from './linkAccount';
+import changeId from "./changeId";
 import displayAPI from './display/displayAPI';
 import displayFriendly from './display/displayFriendly';
 import Config from './Config';
@@ -25,6 +26,7 @@ app.post('/upload', (req, res) => upload(req, res));
 app.all('/oauth', (req, res) => oauth(req, res));
 app.post('/admin', (req, res) => admin(req, res));
 app.post('/linkAccount', (req, res) => linkAccount(req, res));
+app.post('/changeId', (req, res) => changeId(req, res));
 
 app.get('/c/:content', (req, res) => displayAPI(req, res));
 app.get('/:content/:full', (req, res) => res.redirect(`/${req.params.content}`));

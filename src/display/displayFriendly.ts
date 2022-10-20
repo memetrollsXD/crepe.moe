@@ -15,6 +15,8 @@ const r = (...args: string[]) => resolve(__dirname, ...args);
 
 export default async function displayFriendly(req: Request, res: Response) {
     try {
+        if (fs.existsSync(r(`../frontend/public${req.path}`))) return processStatic(req, res);
+        
         const content = req.path.slice(1);
         if (!content) return await processStatic(req, res);
 

@@ -3,6 +3,7 @@ import { ActionType, AdminReq, PremiumLevel } from "./frontend/public/SharedType
 import AuthManager from "./auth/AuthManager";
 import Upload from "./db/Upload";
 import { getUploadByUID } from "./util";
+import Config from "./Config";
 
 export default async function run(req: Request, res: Response) {
     const body = <AdminReq>req.body;
@@ -49,19 +50,28 @@ export default async function run(req: Request, res: Response) {
             });
             break;
         case ActionType.ChangeID:
+            //! Keep this updated. It won't hijack an URL, but it will prevent the user from losing its upload.
+
             // Change upload ID
             if ((dToken?.premiumLevel || 0) < PremiumLevel.PREMIUM) return res.status(403).send({
                 success: false,
                 message: "Not premium: cannot change ID"
             });
-            if (!body.data.newId) return res.status(400).send({
+            let newId = body.data.newId;
+            newId = newId.replace(/[^a-zA-Z0-9_-]/g, "_");
+            if (!newId) return res.status(400).send({
                 success: false,
                 message: "No new ID provided"
             });
 
+            if (Config.DISALLOWED_IDS.includes(newId)) return res.status(400).send({
+                success: false,
+                message: "New ID is not allowed"
+            });
+
             entry.updateOne({
                 $set: {
-                    uploadId: body.data.newId
+                    uploadId: newId
                 }
             }).then(() => {
                 res.status(200).send({

@@ -3,7 +3,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
 // @ts-ignore
 import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
-import { CrepeToken, getCookie, PremiumLevel, AdminReq, ActionType } from "./SharedTypes"; 
+import { CrepeToken, getCookie, PremiumLevel, AdminReq, ActionType } from "./SharedTypes";
 // @ts-ignore
 import _jwtDecode from "./jwt-decode";
 // @ts-ignore
@@ -139,19 +139,21 @@ function onIDReq(e: MouseEvent) {
         label: null, buttons: [{
             label: "Submit", callback: async (e: MouseEvent) => {
                 const parent = (<HTMLButtonElement>e.target).parentElement?.parentElement?.parentElement;
-                let id = "";
+                let newId = "";
                 parent?.childNodes.forEach(c => {
                     c.childNodes.forEach((c2: any) => {
-                        if (c2.value) id = c2.value;
+                        if (c2.value) newId = c2.value;
                     });
                 });
+                newId = newId.replace(/[^a-zA-Z0-9_-]/g, "_");
+                if (!newId) return; 
 
                 XHR({
-                    type: ActionType.Edit,
+                    type: ActionType.ChangeID,
                     token: cookie!,
-                    data: { id }
+                    data: { newId }
                 });
-                window.location.reload();
+                window.location.href = `/${newId}`;
             }
         }]
     });

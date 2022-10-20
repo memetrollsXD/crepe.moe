@@ -8,6 +8,7 @@
     <meta property="og:video" content="{{cdn}}" />
     <meta property="og:video:type" content="video/mp4" />
     <meta property="cmoe:ownerid" content="{{ownerid}}" />
+    <meta property="cmoe:premium" content='{{isPremium}}' />
 
     <script src="fa/js/all.min.js" defer></script>
     <link rel="stylesheet" href="/index.css">
@@ -31,7 +32,7 @@
         </div>
         <div class="container-main">
             <div id="start">
-                <h1>{{title}}</h1>
+                {{isPremium}}<h1> {{title}}</h1>
                 {{preview}}
                 <p>{{views}} <i class="fa-solid fa-eye" aria-hidden="true"></i> &middot; Uploaded {{timestamp}}</p>
             </div>

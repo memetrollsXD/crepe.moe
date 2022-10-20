@@ -57,6 +57,9 @@ class Upload {
     @prop({ required: true, allowMixed: 0 })
     public saveAs!: SaveAs;
 
+    @prop({ default: false })
+    public isPremium?: boolean;
+
     //! Use del instead of delete
     public async del(this: DocumentType<Upload>) {
         fs.unlinkSync(r(__dirname, `../../uploads/${this.saveAs.name}`));

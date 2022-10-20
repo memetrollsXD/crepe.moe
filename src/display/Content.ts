@@ -6,6 +6,8 @@ import { UploadedFile } from "express-fileupload";
 import fs from "fs";
 import { resolve } from "path";
 import Upload from "../db/Upload";
+import User from "../db/User";
+import { PremiumLevel } from "../frontend/public/SharedTypes";
 
 const r = (...args: string[]) => resolve(__dirname, ...args);
 
@@ -62,6 +64,9 @@ export default class Content {
             delete stripped.data;
             delete stripped.mv;
 
+            // Fetch owner
+            const owner = await User.findOne({ _id: this.auth.uid });
+
             const upload = new Upload({
                 uploadId: saveAs.split('.').shift() || "",
                 saveAs: {
@@ -71,6 +76,7 @@ export default class Content {
                 ip,
                 file: stripped,
                 ownerUid: this.auth.uid,
+                isPremium: ((owner?.premiumLevel || 0) >= PremiumLevel.PREMIUM)
             })
 
             await upload.save();

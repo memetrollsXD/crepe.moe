@@ -38,7 +38,7 @@ export default async function displayAPI(req: Request, res: Response) {
             res.status(451).send(upload.takedown.reason || "Content is unavailable");
         }
 
-        res.setHeader('Content-Disposition', `attachment; filename="${upload.file.name}"`);
+        await res.setHeader('Content-Disposition', `attachment; filename="${upload.file.name}"`);
         res.sendFile(filePath);
     } catch (e) {
         c.error(e as unknown as Error);

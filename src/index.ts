@@ -26,3 +26,15 @@ const checkExists = (name: string) => (!fs.existsSync(resolve(__dirname, `../${n
 
 checkExists('uploads');
 checkExists('logs');
+
+// Handles uncaught exceptions
+process.on('uncaughtException', (error) => {
+    console.error(error);
+});
+
+// Handles unhandled rejections
+process.on('unhandledRejection', (reason, promise) => {
+    if (reason instanceof Error) {
+        console.error(reason);
+    }
+});

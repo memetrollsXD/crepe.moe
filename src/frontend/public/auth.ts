@@ -22,6 +22,12 @@ if (token && !token.isAnonymous) {
     const p = document.createElement("p");
     p.id = "emailLabel";
     p.innerText = `Signed in as ${token.displayName ?? token.uid}. `;
+    p.innerHTML += `<br>`;
+    if (token.premiumLevel > 0) {
+        p.innerHTML += `You are premium!`;
+    } else {
+        p.innerHTML += `You are not <a href="/premium">premium</a>.`;
+    }
     const a = document.createElement("a");
     a.href = "#";
     a.innerText = "Sign out";

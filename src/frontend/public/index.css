@@ -475,3 +475,11 @@ video {
 .premium-button {
     display: none;
 }
+
+ul {
+    display: inline-block;
+}
+
+li {
+    font-size: 20px;
+}

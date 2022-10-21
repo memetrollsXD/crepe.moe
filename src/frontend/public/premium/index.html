@@ -1,0 +1,52 @@
+<html>
+
+<head>
+    <title>Privacy - {{STATIC_DOMAIN_NAME}}</title>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:site_name" content="{{STATIC_DOMAIN_NAME}}" />
+    <meta property="og:title" content="{{STATIC_DOMAIN_NAME}}" />
+    <meta property="og:description" content="{{STATIC_SLOGAN}}" />
+    <meta name="theme-color" content="#161444">
+    <link rel="stylesheet" href="/index.css">
+</head>
+
+<body>
+    <h2 onclick="window.location.href = '/'" style="cursor: pointer;">{{STATIC_DOMAIN_NAME}}</h2>
+    <p class="lead">{{STATIC_SLOGAN}}</p>
+
+    <form id="file-upload-form" class="uploader-other" action="upload/">
+        <div class="container-main">
+            <div id="start">
+                <h1>Premium</h1>
+
+                <p>
+                    Consider supporting us by purchasing a premium account. This will allow you to upload files up to
+                    {{STATIC_MAX_PREMIUM_FILE_SIZE}} in size.
+                </p>
+
+                <h2>Features</h2>
+                <ul>
+                    <li>Bigger upload size</li>
+                    <li>Change upload ID</li>
+                    <li>Shiny flair on all your uploads</li>
+                </ul>
+
+                <h2>Pricing</h2>
+                <ul>
+                    <li>$1 per month</li>
+                    <li>$5 per 6 months</li>
+                    <li>$10 per year</li>
+                </ul>
+
+                <br><br>
+
+                <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script>
+                <script
+                    type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#29abe0', 'B0B53SHVU'); kofiwidget2.draw();</script>
+            </div>
+        </div>
+    </form>
+    {{STATIC_FOOTER}}
+</body>
+
+</html>

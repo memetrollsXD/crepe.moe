@@ -26,7 +26,7 @@ if (token && !token.isAnonymous) {
     if (token.premiumLevel > 0) {
         p.innerHTML += `You are premium!`;
     } else {
-        p.innerHTML += `You are not <a href="/premium">premium</a>.`;
+        p.innerHTML += `You are not <a href="/premium" style="color: white; text-decoration: underline">premium</a>.`;
     }
     const a = document.createElement("a");
     a.href = "#";

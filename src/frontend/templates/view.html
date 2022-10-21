@@ -8,6 +8,7 @@
     <meta property="og:video" content="{{cdn}}" />
     <meta property="og:video:type" content="video/mp4" />
     <meta property="cmoe:ownerid" content="{{ownerid}}" />
+    <meta property="cmoe:premium" content='{{isPremium}}' />
 
     <script src="fa/js/all.min.js" defer></script>
     <link rel="stylesheet" href="/index.css">
@@ -25,12 +26,13 @@
 
         <div class="admin-buttons">
             <!-- <i class="fa-solid fa-shield-exclamation admin-button dmca-req"></i> -->
+            <i class="fa-solid fa-tag admin-button premium-button id-req"></i>
             <i class="fa-solid fa-file-pen admin-button edit-req"></i>
             <i class="fa-solid fa-trash-xmark admin-button delete-req"></i>
         </div>
         <div class="container-main">
             <div id="start">
-                <h1>{{title}}</h1>
+                {{isPremium}}<h1> {{title}}</h1>
                 {{preview}}
                 <p>{{views}} <i class="fa-solid fa-eye" aria-hidden="true"></i> &middot; Uploaded {{timestamp}}</p>
             </div>

@@ -12,8 +12,10 @@ const DEFAULT_CONFIG = {
 
     // Upload
     MAX_FILE_MB: 512,
+    MAX_PREMIUM_FILE_MB: 1024,
     DOMAIN_NAME: "crepe.moe",
     SLOGAN: "Free temporary file hosting for everyone!",
+    DISALLOWED_IDS: ["upload", "oauth", "admin", "linkAccount", "c", "auth", "fa", "privacy", ""],
 
     // Firebase
     FIREBASE_PUBLIC_CONFIG: {
@@ -61,15 +63,17 @@ function updateConfig(config: any) {
 
 export default class Config {
     public static config = readConfig();
-    public static MONGO_URI = Config.config.MONGO_URI;
-    public static MAX_FILE_MB = Config.config.MAX_FILE_MB;
-    public static DOMAIN_NAME = Config.config.DOMAIN_NAME;
-    public static SLOGAN = Config.config.SLOGAN;
+    public static MONGO_URI: string = Config.config.MONGO_URI;
+    public static MAX_FILE_MB: number = Config.config.MAX_FILE_MB;
+    public static MAX_PREMIUM_FILE_MB: number = Config.config.MAX_PREMIUM_FILE_MB;
+    public static DOMAIN_NAME: string = Config.config.DOMAIN_NAME;
+    public static SLOGAN: string = Config.config.SLOGAN;
     public static HTTP_HOST: string = Config.config.HTTP_HOST;
     public static HTTP_PORT: number = Config.config.HTTP_PORT;
     public static FIREBASE_PUBLIC_CONFIG: typeof DEFAULT_CONFIG.FIREBASE_PUBLIC_CONFIG = Config.config.FIREBASE_PUBLIC_CONFIG;
-    public static DISCORD_CLIENT_ID = Config.config.DISCORD_CLIENT_ID;
-    public static readonly JWT_SECRET = Config.config.JWT_SECRET;
+    public static DISCORD_CLIENT_ID: string = Config.config.DISCORD_CLIENT_ID;
+    public static DISALLOWED_IDS: string[] = Config.config.DISALLOWED_IDS;
+    public static readonly JWT_SECRET: string = Config.config.JWT_SECRET;
 
     private constructor() { }
 }

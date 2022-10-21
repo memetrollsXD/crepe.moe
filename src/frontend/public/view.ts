@@ -3,7 +3,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
 // @ts-ignore
 import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
-import { CrepeToken, getCookie } from "./SharedTypes"; 
+import { CrepeToken, getCookie, PremiumLevel, AdminReq, ActionType } from "./SharedTypes";
 // @ts-ignore
 import _jwtDecode from "./jwt-decode";
 // @ts-ignore
@@ -41,15 +41,21 @@ if (token) {
 
     if (ownerUid && token.uid === ownerUid) {
         adminButtons.style.display = "block";
+        if (token.premiumLevel >= PremiumLevel.PREMIUM) {
+            const premiumButtons = document.querySelectorAll<HTMLLIElement>(".premium-button");
+            premiumButtons.forEach(b => b.style.display = "initial");
+        }
     }
 
     // Add event listeners to admin icons
     // const dmcaReq = document.querySelector<HTMLAnchorElement>(".dmca-req")!;
-    const editReq = document.querySelector<HTMLAnchorElement>(".edit-req")!;
-    const deleteReq = document.querySelector<HTMLAnchorElement>(".delete-req")!;
+    const editReq = document.querySelector<HTMLAnchorElement>(".edit-req");
+    const deleteReq = document.querySelector<HTMLAnchorElement>(".delete-req");
+    const idReq = document.querySelector<HTMLAnchorElement>(".id-req");
     // dmcaReq.addEventListener("click", onDMCAReq);
-    editReq.addEventListener("click", onEditReq);
-    deleteReq.addEventListener("click", onDeleteReq);
+    editReq?.addEventListener("click", onEditReq);
+    deleteReq?.addEventListener("click", onDeleteReq);
+    idReq?.addEventListener("click", onIDReq);
 } else {
     adminButtons.remove();
 }
@@ -127,6 +133,32 @@ function onDeleteReq(e: MouseEvent) {
     });
 }
 
+function onIDReq(e: MouseEvent) {
+    e.preventDefault();
+    showModal([{ label: "Change ID", type: TextType.TextField }], {
+        label: null, buttons: [{
+            label: "Submit", callback: async (e: MouseEvent) => {
+                const parent = (<HTMLButtonElement>e.target).parentElement?.parentElement?.parentElement;
+                let newId = "";
+                parent?.childNodes.forEach(c => {
+                    c.childNodes.forEach((c2: any) => {
+                        if (c2.value) newId = c2.value;
+                    });
+                });
+                newId = newId.replace(/[^a-zA-Z0-9_-]/g, "_");
+                if (!newId) return; 
+
+                XHR({
+                    type: ActionType.ChangeID,
+                    token: cookie!,
+                    data: { newId }
+                });
+                window.location.href = `/${newId}`;
+            }
+        }]
+    });
+}
+
 enum TextType {
     TextField = 0,
     TextArea = 1
@@ -177,19 +209,6 @@ function showModal(textFields: { label: string, type: TextType }[] = [], buttonF
 }
 
 // showModal([{ label: "TextField", type: TextType.TextArea }, { label: "TextInput", type: TextType.TextField }], { label: "Buttons", buttons: [{ label: "Delete", callback: (e) => { console.log(e); }, color: "#c13133" }, { label: "Cancel", callback: (e) => { console.log(e); } }] });
-
-enum ActionType {
-    Delete = 0,
-    Edit = 1,
-    DMCA = 2
-}
-
-interface AdminReq {
-    type: ActionType,
-    token: string,
-    id?: string,
-    data: any
-}
 
 function XHR(data: AdminReq) {
     data.id = window.location.pathname.split("/")[1];

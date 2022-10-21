@@ -471,3 +471,15 @@ video {
     display: flex;
     justify-content: space-between;
 }
+
+.premium-button {
+    display: none;
+}
+
+ul {
+    display: inline-block;
+}
+
+li {
+    font-size: 20px;
+}

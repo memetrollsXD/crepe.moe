@@ -19,11 +19,20 @@ export default async function run(req: Request, res: Response) {
             return;
         }
 
-        // If the file size exceeds 512MB, reject it
+        // Fetch owner
+        const owner = await User.findOne({ _id: req.body.uid });
+        const isPremium = (owner?.premiumLevel || 0) >= PremiumLevel.PREMIUM;
+
+        // If the file size exceeds file limit, reject it
         const file = req.files.file as UploadedFile;
-        if (file.size > Config.MAX_FILE_MB * 1024 ** 2) {
-            res.status(400).send('File is too large');
-            return;
+        if (isPremium) {
+            if (file.size > Config.MAX_PREMIUM_FILE_MB)
+                return res.status(400)
+                    .send('File is too large');
+        } else {
+            if (file.size > Config.MAX_FILE_MB * 1024 ** 2)
+                return res.status(400)
+                    .send('File is too large');
         }
 
         const tmpUser = new User({
@@ -35,12 +44,12 @@ export default async function run(req: Request, res: Response) {
             premiumLevel: PremiumLevel.NONE,
             isAnonymous: true
         });
-        
+
         if (!req.body.uid) {
             tmpUser.save();
         }
 
-        const authData = req.body.uid ? req.body : { uid: tmpUser._id };
+        const authData = req.body.uid ? { ...req.body, isPremium } : { uid: tmpUser._id };
 
         new Content(file, authData).save(req.ip).then(async (saved: SavedContent) => {
             c.log(`${saved.uploadId} uploaded by ${req.ip}`);

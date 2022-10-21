@@ -10,15 +10,7 @@ import { UploadRsp } from "./SharedTypes";
 // @ts-ignore
 const jwtDecode = _jwtDecode as (token: string) => CrepeToken;
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDoSUHACvuXdv5h7NAXcW3DB-tL4kpIElI",
-    authDomain: "crepemoe.firebaseapp.com",
-    projectId: "crepemoe",
-    storageBucket: "crepemoe.appspot.com",
-    messagingSenderId: "894429155894",
-    appId: "1:894429155894:web:750822821515130abdbe97",
-    measurementId: "G-PF95GTBX0N"
-};
+const firebaseConfig = JSON.parse(`{{STATIC_FIREBASE_CONFIG}}`);
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -27,11 +19,12 @@ const analytics = getAnalytics(app);
 // Auth
 
 const cookie = getCookie("_CMOEAUTHTOKEN");
-let token: CrepeToken| null = null;
+let token: CrepeToken | null = null;
 if (cookie) token = jwtDecode(cookie);
 
 // Check template.ts (Server Side Rendering)
 const FILE_SIZE_LIMIT = Number("{{STATIC_MAX_FILE_MB}}") * 1024 ** 2;
+const PREMIUM_SIZE_LIMIT = Number("{{STATIC_MAX_PREMIUM_FILE_MB}}") * 1024 ** 2;
 const fileDrag = document.querySelector<HTMLLabelElement>('#file-drag')!;
 const fileSelect = document.querySelector<HTMLInputElement>('#file-upload')!;
 const uploads = document.querySelector<HTMLDivElement>('#uploads')!;
@@ -149,16 +142,22 @@ function onUpload(e: any) { // Fuck this i'm not finding the type
         document.getElementById('start')?.classList.remove("hidden");
         fileForm.reset();
     }
-    if (file.size >= FILE_SIZE_LIMIT) {
-        showResponse(`File too big. ${toSize(file.size)} > ${toSize(FILE_SIZE_LIMIT)}`);
-        return;
+
+    if (token && token.premiumLevel >= 1) {
+        if (file.size > PREMIUM_SIZE_LIMIT) {
+            showResponse(`File too big. ${toSize(file.size)} > ${toSize(PREMIUM_SIZE_LIMIT)}`);
+            return;
+        }
+    } else {
+        if (file.size >= FILE_SIZE_LIMIT) {
+            showResponse(`File too big. ${toSize(file.size)} > ${toSize(FILE_SIZE_LIMIT)}`);
+            return;
+        }
     }
     // Make a POST request with the file
     const formData = new FormData();
     formData.append('file', file);
-    if (token) {
-        formData.append('uid', token.uid);
-    }
+    if (token) formData.append('uid', token.uid);
     const xhr = new XMLHttpRequest();
     uploads.appendChild(upload);
     xhr.open('POST', '/upload');

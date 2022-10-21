@@ -13,10 +13,13 @@ export default class Template {
     public constructor(public readonly file: string, fields?: stringObject) {
         this.fields = {
             STATIC_MAX_FILE_SIZE: toSize(Config.MAX_FILE_MB * 1000000),
+            STATIC_MAX_PREMIUM_FILE_SIZE: toSize(Config.MAX_PREMIUM_FILE_MB * 1000000),
             STATIC_SLOGAN: Config.SLOGAN,
             STATIC_DOMAIN_NAME: Config.DOMAIN_NAME,
-            STATIC_MAX_FILE_MB: Config.MAX_FILE_MB,
+            STATIC_MAX_FILE_MB: Config.MAX_FILE_MB.toString(),
+            STATIC_MAX_PREMIUM_FILE_MB: Config.MAX_PREMIUM_FILE_MB.toString(),
             STATIC_DISCORD_CLIENT_ID: Config.DISCORD_CLIENT_ID,
+            STATIC_FIREBASE_CONFIG: JSON.stringify(Config.FIREBASE_PUBLIC_CONFIG),
             ...fields
         };
         if (!this.file.includes("footer.html")) this.fields["STATIC_FOOTER"] = new Template(r(__dirname, "./frontend/templates/footer.html")).render();

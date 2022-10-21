@@ -47,6 +47,20 @@ export interface AuthState {
     uid: string;
 }
 
+export enum ActionType {
+    Delete = 0,
+    Edit = 1,
+    DMCA = 2,
+    ChangeID = 3
+}
+
+export interface AdminReq {
+    type?: ActionType,
+    token?: string,
+    id?: string
+    data?: any
+}
+
 export function getCookie(name: string) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');

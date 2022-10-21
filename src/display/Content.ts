@@ -6,6 +6,8 @@ import { UploadedFile } from "express-fileupload";
 import fs from "fs";
 import { resolve } from "path";
 import Upload from "../db/Upload";
+import User from "../db/User";
+import { PremiumLevel } from "../frontend/public/SharedTypes";
 
 const r = (...args: string[]) => resolve(__dirname, ...args);
 
@@ -27,6 +29,7 @@ interface TakedownInfo {
 interface AuthData {
     uid?: string;
     token?: string;
+    isPremium?: boolean;
 }
 
 export interface SavedContent {
@@ -71,6 +74,7 @@ export default class Content {
                 ip,
                 file: stripped,
                 ownerUid: this.auth.uid,
+                isPremium: this.auth.isPremium
             })
 
             await upload.save();

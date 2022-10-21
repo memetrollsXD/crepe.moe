@@ -15,6 +15,8 @@ const r = (...args: string[]) => resolve(__dirname, ...args);
 
 export default async function displayFriendly(req: Request, res: Response) {
     try {
+        if (fs.existsSync(r(`../frontend/public${req.path}`))) return processStatic(req, res);
+        
         const content = req.path.slice(1);
         if (!content) return await processStatic(req, res);
 
@@ -45,7 +47,8 @@ export default async function displayFriendly(req: Request, res: Response) {
             preview: previewType,
             timestamp: new Date(upload.timestamp!).toLocaleString(),
             views: upload.views!.toString(),
-            ownerid: upload.ownerUid ?? ""
+            ownerid: upload.ownerUid ?? "",
+            isPremium: upload.isPremium ? `<b style="color: gold; user-select: none;"><i class="fa-solid fa-sparkles"></i> PREMIUM</b>` : "",
         });
 
         upload.takedown!.status ? res.status(451).send(new Template(r(`../frontend/templates/takedown.html`), { reason: upload.takedown!.reason }).render()) : res.send(page.render());

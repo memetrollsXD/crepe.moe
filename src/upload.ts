@@ -50,9 +50,9 @@ export default async function run(req: Request, res: Response) {
                 timestamp: Date.now(),
                 data: {
                     url: {
-                        full: `https://${Config.DOMAIN_NAME}/${saved._id}/${saved.file.name}`,
-                        short: `https://${Config.DOMAIN_NAME}/${saved._id}`,
-                        cdn: `https://${Config.DOMAIN_NAME}/c/${saved._id}`,
+                        full: `https://${Config.DOMAIN_NAME}/${saved.uploadId}/${saved.file.name}`,
+                        short: `https://${Config.DOMAIN_NAME}/${saved.uploadId}`,
+                        cdn: `https://${Config.DOMAIN_NAME}/c/${saved.uploadId}`,
                         id: saved.uploadId
                     },
                     meta: saved.file,

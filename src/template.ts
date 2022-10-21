@@ -13,6 +13,7 @@ export default class Template {
     public constructor(public readonly file: string, fields?: stringObject) {
         this.fields = {
             STATIC_MAX_FILE_SIZE: toSize(Config.MAX_FILE_MB * 1000000),
+            STATIC_MAX_PREMIUM_FILE_SIZE: toSize(Config.MAX_PREMIUM_FILE_MB * 1000000),
             STATIC_SLOGAN: Config.SLOGAN,
             STATIC_DOMAIN_NAME: Config.DOMAIN_NAME,
             STATIC_MAX_FILE_MB: Config.MAX_FILE_MB.toString(),

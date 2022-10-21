@@ -28,7 +28,7 @@ export default async function run(req: Request, res: Response) {
         if (isPremium) {
             if (file.size > Config.MAX_PREMIUM_FILE_MB)
                 return res.status(400)
-                    .send('File size exceeds 512MB');
+                    .send('File is too large');
         } else {
             if (file.size > Config.MAX_FILE_MB * 1024 ** 2)
                 return res.status(400)

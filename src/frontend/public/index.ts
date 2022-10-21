@@ -10,15 +10,7 @@ import { UploadRsp } from "./SharedTypes";
 // @ts-ignore
 const jwtDecode = _jwtDecode as (token: string) => CrepeToken;
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDoSUHACvuXdv5h7NAXcW3DB-tL4kpIElI",
-    authDomain: "crepemoe.firebaseapp.com",
-    projectId: "crepemoe",
-    storageBucket: "crepemoe.appspot.com",
-    messagingSenderId: "894429155894",
-    appId: "1:894429155894:web:750822821515130abdbe97",
-    measurementId: "G-PF95GTBX0N"
-};
+const firebaseConfig = JSON.parse(`{{STATIC_FIREBASE_CONFIG}}`);
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

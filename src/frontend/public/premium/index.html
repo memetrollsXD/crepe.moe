@@ -1,13 +1,30 @@
 <html>
 
 <head>
-    <title>Privacy - {{STATIC_DOMAIN_NAME}}</title>
+    <title>Premium - {{STATIC_DOMAIN_NAME}}</title>
     <meta name="twitter:card" content="summary_large_image">
     <meta property="og:site_name" content="{{STATIC_DOMAIN_NAME}}" />
     <meta property="og:title" content="{{STATIC_DOMAIN_NAME}}" />
     <meta property="og:description" content="{{STATIC_SLOGAN}}" />
     <meta name="theme-color" content="#161444">
     <link rel="stylesheet" href="/index.css">
+    <script defer type="module">
+        // @ts-check
+        // @ts-ignore
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        // @ts-ignore
+        import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+
+        const firebaseConfig = JSON.parse(`{{STATIC_FIREBASE_CONFIG}}`);
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        document.querySelector(".kofi-button")?.addEventListener("click", () => {
+            logEvent(analytics, "kofi_click");
+        });
+    </script>
 </head>
 
 <body>
@@ -41,8 +58,8 @@
                 <br><br>
 
                 <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script>
-                <script
-                    type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#29abe0', 'B0B53SHVU'); kofiwidget2.draw();</script>
+                <script type='text/javascript'>//@ts-ignore
+                    kofiwidget2.init('Support Me on Ko-fi', '#29abe0', 'B0B53SHVU'); kofiwidget2.draw();</script>
             </div>
         </div>
     </form>

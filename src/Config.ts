@@ -12,6 +12,7 @@ const DEFAULT_CONFIG = {
 
     // Upload
     MAX_FILE_MB: 512,
+    MAX_PREMIUM_FILE_MB: 1024,
     DOMAIN_NAME: "crepe.moe",
     SLOGAN: "Free temporary file hosting for everyone!",
     DISALLOWED_IDS: ["upload", "oauth", "admin", "linkAccount", "c", "auth", "fa", "privacy", ""],
@@ -64,6 +65,7 @@ export default class Config {
     public static config = readConfig();
     public static MONGO_URI: string = Config.config.MONGO_URI;
     public static MAX_FILE_MB: number = Config.config.MAX_FILE_MB;
+    public static MAX_PREMIUM_FILE_MB: number = Config.config.MAX_PREMIUM_FILE_MB;
     public static DOMAIN_NAME: string = Config.config.DOMAIN_NAME;
     public static SLOGAN: string = Config.config.SLOGAN;
     public static HTTP_HOST: string = Config.config.HTTP_HOST;

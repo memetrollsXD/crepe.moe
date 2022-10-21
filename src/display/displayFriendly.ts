@@ -48,7 +48,7 @@ export default async function displayFriendly(req: Request, res: Response) {
             timestamp: new Date(upload.timestamp!).toLocaleString(),
             views: upload.views!.toString(),
             ownerid: upload.ownerUid ?? "",
-            isPremium: upload.isPremium ? `<b style="color: gold"><i class="fa-solid fa-sparkles"></i> PREMIUM</b>` : "",
+            isPremium: upload.isPremium ? `<b style="color: gold; user-select: none;"><i class="fa-solid fa-sparkles"></i> PREMIUM</b>` : "",
         });
 
         upload.takedown!.status ? res.status(451).send(new Template(r(`../frontend/templates/takedown.html`), { reason: upload.takedown!.reason }).render()) : res.send(page.render());

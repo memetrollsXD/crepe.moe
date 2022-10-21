@@ -29,6 +29,7 @@ interface TakedownInfo {
 interface AuthData {
     uid?: string;
     token?: string;
+    isPremium?: boolean;
 }
 
 export interface SavedContent {
@@ -64,9 +65,6 @@ export default class Content {
             delete stripped.data;
             delete stripped.mv;
 
-            // Fetch owner
-            const owner = await User.findOne({ _id: this.auth.uid });
-
             const upload = new Upload({
                 uploadId: saveAs.split('.').shift() || "",
                 saveAs: {
@@ -76,7 +74,7 @@ export default class Content {
                 ip,
                 file: stripped,
                 ownerUid: this.auth.uid,
-                isPremium: ((owner?.premiumLevel || 0) >= PremiumLevel.PREMIUM)
+                isPremium: this.auth.isPremium
             })
 
             await upload.save();

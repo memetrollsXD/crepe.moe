@@ -6,7 +6,7 @@ import { Request, Response } from 'express';
 import fs from 'fs';
 import { resolve } from 'path';
 import Config from '../Config';
-import Database from '../db/Database';
+import Upload from '../db/Upload';
 import Logger from '../Logger';
 import { getUploadByUID } from '../util';
 const c = new Logger("API");
@@ -29,16 +29,25 @@ export default async function displayAPI(req: Request, res: Response) {
             return;
         }
         c.log(`${req.originalUrl.split('?')[0]} requested by ${req.ip}`);
+
         // Update view count
-        upload.views++;
-        await Database.getInstance().update('uploads', { _id: upload._id }, upload);
+        await Upload.findOneAndUpdate({ uploadId: upload.uploadId }, {
+            $inc: {
+                views: 1
+            }
+        });
 
         // Check if file is blacklisted
-        if (upload.takedown.status) {
-            res.status(451).send(upload.takedown.reason || "Content is unavailable");
+        if (upload.takedown!.status) {
+            res.status(451).send(upload.takedown!.reason || "Content is unavailable");
+            return;
         }
 
-        await res.setHeader('Content-Disposition', `attachment; filename="${upload.file.name}"`);
+        let fileName = upload.file.name;
+        // Add file extension
+        if (!fileName.endsWith(`.${upload.saveAs.ext}`)) fileName += `.${upload.saveAs.ext}`;
+
+        await res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
         res.sendFile(filePath);
     } catch (e) {
         c.error(e as unknown as Error);

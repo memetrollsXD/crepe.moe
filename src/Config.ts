@@ -1,15 +1,34 @@
 import fs from 'fs';
 import { resolve } from 'path';
-import { r } from './util';
+import { generateRandomString, r } from './util';
 
 const DEFAULT_CONFIG = {
     // MongoDB
     MONGO_URI: "mongodb://localhost:27017/crepemoe",
-    
+
+    // HTTP,
+    HTTP_HOST: "0.0.0.0",
+    HTTP_PORT: 8008,
+
     // Upload
     MAX_FILE_MB: 512,
     DOMAIN_NAME: "crepe.moe",
-    SLOGAN: "Free temporary file hosting for everyone!"
+    SLOGAN: "Free temporary file hosting for everyone!",
+
+    // Firebase
+    FIREBASE_PUBLIC_CONFIG: {
+        apiKey: "AIzaSyDoSUHACvuXdv5h7NAXcW3DB-tL4kpIElI",
+        authDomain: "crepemoe.firebaseapp.com",
+        projectId: "crepemoe",
+        storageBucket: "crepemoe.appspot.com",
+        messagingSenderId: "894429155894",
+        appId: "1:894429155894:web:750822821515130abdbe97",
+        measurementId: "G-PF95GTBX0N"
+    },
+
+    // Discord OAuth2 / JWT
+    DISCORD_CLIENT_ID: "1030169566522908822",
+    JWT_SECRET: generateRandomString(64)
 }
 type DefaultConfig = typeof DEFAULT_CONFIG;
 
@@ -46,6 +65,11 @@ export default class Config {
     public static MAX_FILE_MB = Config.config.MAX_FILE_MB;
     public static DOMAIN_NAME = Config.config.DOMAIN_NAME;
     public static SLOGAN = Config.config.SLOGAN;
+    public static HTTP_HOST: string = Config.config.HTTP_HOST;
+    public static HTTP_PORT: number = Config.config.HTTP_PORT;
+    public static FIREBASE_PUBLIC_CONFIG: typeof DEFAULT_CONFIG.FIREBASE_PUBLIC_CONFIG = Config.config.FIREBASE_PUBLIC_CONFIG;
+    public static DISCORD_CLIENT_ID = Config.config.DISCORD_CLIENT_ID;
+    public static readonly JWT_SECRET = Config.config.JWT_SECRET;
 
     private constructor() { }
 }

@@ -4,8 +4,8 @@
  */
 import { UploadedFile } from "express-fileupload";
 import fs from "fs";
-import Database from "../db/Database";
 import { resolve } from "path";
+import Upload from "../db/Upload";
 
 const r = (...args: string[]) => resolve(__dirname, ...args);
 
@@ -24,6 +24,11 @@ interface TakedownInfo {
     reason: string;
 }
 
+interface AuthData {
+    uid?: string;
+    token?: string;
+}
+
 export interface SavedContent {
     _id: string;
     saveAs: {
@@ -35,13 +40,12 @@ export interface SavedContent {
     timestamp: number;
     views: number;
     takedown: TakedownInfo;
+    uploadId: string;
+    ownerUid?: string;
 }
 
 export default class Content {
-    file: UploadedFile;
-    constructor(file: UploadedFile) {
-        this.file = file;
-    }
+    constructor(public readonly file: UploadedFile, public readonly auth: AuthData) { }
 
     /**
      * @method save
@@ -57,29 +61,21 @@ export default class Content {
             const stripped: any = this.file;
             delete stripped.data;
             delete stripped.mv;
-            
-            const rsp = {
-                _id: saveAs.split('.').shift() || "",
+
+            const upload = new Upload({
+                uploadId: saveAs.split('.').shift() || "",
                 saveAs: {
                     name: saveAs,
-                    ext: saveAs.split('.').pop() || "",
+                    ext: saveAs.split('.').pop() || ""
                 },
-                timestamp: Date.now(),
-                ip: ip,
-                file: stripped as SavedFile,
-                views: 0,
-                takedown: {
-                    status: false,
-                    reason: `This request may not be serviced in the Roman Province
-                    of Judea due to the Lex Julia Majestatis, which disallows
-                    access to resources hosted on servers deemed to be
-                    operated by the People's Front of Judea.`,
-                },
-            };
+                ip,
+                file: stripped,
+                ownerUid: this.auth.uid,
+            })
 
-            const db = Database.getInstance();
-            await db.set("uploads", rsp);
-            return rsp;
+            await upload.save();
+
+            return upload.toObject();
         }
     }
 }

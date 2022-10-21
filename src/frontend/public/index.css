@@ -291,7 +291,7 @@ a {
     box-sizing: border-box;
     background: #454cad;
     border-color: #454cad;
-    cursor: pointer;   
+    cursor: pointer;
 }
 
 .upload-size {
@@ -336,4 +336,138 @@ hr {
 
 video {
     max-width: 600px;
+}
+
+#discordBtn {
+    background-color: #454FBF;
+    color: #fff;
+    border-radius: 5px;
+    border: 0;
+    padding: 10px;
+    font-size: 20px;
+    text-align: center;
+    width: 40%;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: none;
+    /* Align to center */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#discordBtn svg {
+    margin-right: 10px;
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+.normalLink {
+    color: white;
+    text-decoration: underline;
+    transition: all 0.2s ease-in-out;
+}
+
+.admin-buttons {
+    display: none;
+    clear: both;
+    margin: 0 auto;
+    text-align: center;
+    color: #5f6982;
+    font-size: 14px;
+    font-family: system-ui;
+    /* Align to the right */
+    text-align: right;
+    /* No weird cursor */
+    user-select: none;
+    cursor: default;
+}
+
+.admin-button {
+    display: inline-block;
+    margin: -1;
+    clear: both;
+    font-weight: 700;
+    font-size: 18px; /* This controls how big the icons are */
+    text-decoration: none;
+    text-transform: initial;
+    border: none;
+    outline: none;
+    padding-right: 0.5rem;
+    height: 36px;
+}
+
+/* On hover, make it brighter */
+.admin-button:hover {
+    color: #838bff;
+}
+
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #161444;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    border-radius: 7px;
+    border: 3px solid #343170;
+}
+
+.modal-content label {
+    color: white;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.modal-content input, .modal-content textarea {
+    background-color: #161444;
+    border: 1px solid #343170;
+    color: white;
+    border-radius: 7px;
+    padding: 5px;
+    /* Make the label be above input */
+    display: block;
+    margin-bottom: 10px;
+    /* Align center */
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+
+.modal-content input {
+    width: 30%;
+}
+
+.modal-content button {
+    background-color: #454FBF;
+    color: #fff;
+    border-radius: 5px;
+    border: 0;
+    padding: 8px;
+    text-align: center;
+    width: 15%;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-right: auto;
+    /*  */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
 }

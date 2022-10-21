@@ -7,30 +7,10 @@ import { UploadedFile } from 'express-fileupload';
 import Logger from './Logger';
 import Content, { SavedContent } from './display/Content';
 import Config from './Config';
+import { PremiumLevel, UploadRsp } from './frontend/public/SharedTypes';
+import User from './db/User';
+import AuthManager from './auth/AuthManager';
 const c = new Logger("Upload");
-
-interface UploadRsp {
-    success: boolean;
-    message: string;
-    timestamp: number;
-    data: {
-        url: {
-            full: string;
-            short: string;
-            cdn: string;
-            id: string;
-        },
-        meta: {
-            name: string;
-            size: number;
-            encoding: string;
-            tempFilePath: string;
-            truncated: boolean;
-            mimetype: string;
-            md5: string;
-        }
-    }
-}
 
 export default async function run(req: Request, res: Response) {
     try {
@@ -38,17 +18,33 @@ export default async function run(req: Request, res: Response) {
             res.status(400).send('No file uploaded');
             return;
         }
-        const file = req.files.file as UploadedFile;
 
         // If the file size exceeds 512MB, reject it
+        const file = req.files.file as UploadedFile;
         if (file.size > Config.MAX_FILE_MB * 1024 ** 2) {
             res.status(400).send('File is too large');
             return;
         }
 
-        new Content(file).save(req.ip).then((saved: SavedContent) => {
-            c.log(`${saved._id} uploaded by ${req.ip}`);
-            res.send({
+        const tmpUser = new User({
+            discordId: 0,
+            displayName: "Anonymous",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            email: "anonymous@crepe.moe",
+            premiumLevel: PremiumLevel.NONE,
+            isAnonymous: true
+        });
+        
+        if (!req.body.uid) {
+            tmpUser.save();
+        }
+
+        const authData = req.body.uid ? req.body : { uid: tmpUser._id };
+
+        new Content(file, authData).save(req.ip).then(async (saved: SavedContent) => {
+            c.log(`${saved.uploadId} uploaded by ${req.ip}`);
+            res.send(<UploadRsp>{
                 success: true,
                 message: "OK",
                 timestamp: Date.now(),
@@ -57,11 +53,13 @@ export default async function run(req: Request, res: Response) {
                         full: `https://${Config.DOMAIN_NAME}/${saved._id}/${saved.file.name}`,
                         short: `https://${Config.DOMAIN_NAME}/${saved._id}`,
                         cdn: `https://${Config.DOMAIN_NAME}/c/${saved._id}`,
-                        id: saved._id
+                        id: saved.uploadId
                     },
-                    meta: saved.file
-                }
-            } as UploadRsp);
+                    meta: saved.file,
+                    ownerUid: saved.ownerUid
+                },
+                newAccountToken: req.body.uid ? undefined : await AuthManager.Instance.generateToken(tmpUser)
+            });
         });
     } catch (e) {
         c.error(e as unknown as Error);

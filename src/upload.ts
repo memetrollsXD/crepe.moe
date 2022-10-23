@@ -26,7 +26,7 @@ export default async function run(req: Request, res: Response) {
         // If the file size exceeds file limit, reject it
         const file = req.files.file as UploadedFile;
         if (isPremium) {
-            if (file.size > Config.MAX_PREMIUM_FILE_MB)
+            if (file.size > Config.MAX_PREMIUM_FILE_MB * 1024 ** 2)
                 return res.status(400)
                     .send('File is too large');
         } else {

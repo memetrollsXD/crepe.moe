@@ -28,7 +28,7 @@ export default async function displayAPI(req: Request, res: Response) {
             res.status(404).send('Content not found!');
             return;
         }
-        const ip = req.headers['X-Real-IP'] ?? req.ip;
+        const ip = req.headers['x-real-ip'] ?? req.ip;
         c.log(`${req.originalUrl.split('?')[0]} requested by ${ip}`);
 
         // Update view count

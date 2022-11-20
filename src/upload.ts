@@ -51,7 +51,7 @@ export default async function run(req: Request, res: Response) {
 
         const authData = req.body.uid ? { ...req.body, isPremium } : { uid: tmpUser._id };
 
-        const ip = req.headers['X-Real-IP'] ?? req.ip;
+        const ip = req.headers['x-real-ip'] ?? req.ip;
         new Content(file, authData).save(ip as string).then(async (saved: SavedContent) => {
             c.log(`${saved.uploadId} uploaded by ${ip}`);
             res.send(<UploadRsp>{

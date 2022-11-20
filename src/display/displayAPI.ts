@@ -28,7 +28,8 @@ export default async function displayAPI(req: Request, res: Response) {
             res.status(404).send('Content not found!');
             return;
         }
-        c.log(`${req.originalUrl.split('?')[0]} requested by ${req.ip}`);
+        const ip = req.headers['X-Real-IP'] ?? req.ip;
+        c.log(`${req.originalUrl.split('?')[0]} requested by ${ip}`);
 
         // Update view count
         await Upload.findOneAndUpdate({ uploadId: upload.uploadId }, {

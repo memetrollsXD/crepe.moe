@@ -22,6 +22,7 @@ export default class Template {
             STATIC_FIREBASE_CONFIG: JSON.stringify(Config.FIREBASE_PUBLIC_CONFIG),
             ...fields
         };
+        this.fields["STATIC_ANNOUNCE_BANNER"] = Config.ANNOUNCE_BANNER ? `<div class="ann-header">${Config.ANNOUNCE_BANNER}</div>` : ``;
         if (!this.file.includes("footer.html")) this.fields["STATIC_FOOTER"] = new Template(r(__dirname, "./frontend/templates/footer.html")).render();
     }
     public render(): string {

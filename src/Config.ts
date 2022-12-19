@@ -30,7 +30,10 @@ const DEFAULT_CONFIG = {
 
     // Discord OAuth2 / JWT
     DISCORD_CLIENT_ID: "1030169566522908822",
-    JWT_SECRET: generateRandomString(64)
+    JWT_SECRET: generateRandomString(64),
+
+    // General - Leave empty to disable
+    ANNOUNCE_BANNER: "",
 }
 type DefaultConfig = typeof DEFAULT_CONFIG;
 
@@ -73,6 +76,7 @@ export default class Config {
     public static FIREBASE_PUBLIC_CONFIG: typeof DEFAULT_CONFIG.FIREBASE_PUBLIC_CONFIG = Config.config.FIREBASE_PUBLIC_CONFIG;
     public static DISCORD_CLIENT_ID: string = Config.config.DISCORD_CLIENT_ID;
     public static DISALLOWED_IDS: string[] = Config.config.DISALLOWED_IDS;
+    public static ANNOUNCE_BANNER: string = Config.config.ANNOUNCE_BANNER;
     public static readonly JWT_SECRET: string = Config.config.JWT_SECRET;
 
     private constructor() { }

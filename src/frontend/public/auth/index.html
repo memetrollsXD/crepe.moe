@@ -10,7 +10,7 @@
     <script>
         function redirectLogin() {
             const redirect = "https://discord.com/oauth2/authorize?client_id={{STATIC_DISCORD_CLIENT_ID}}&response_type=token&scope=identify%20email";
-            setTimeout(function () { document.location.href = redirect }, 100);
+            setTimeout(function () { document.location.href = redirect }, 1);
         }
     </script>
     <script type="module" defer>

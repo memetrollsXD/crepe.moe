@@ -10,6 +10,7 @@ import Config from './Config';
 import { PremiumLevel, UploadRsp } from './frontend/public/SharedTypes';
 import User from './db/User';
 import AuthManager from './auth/AuthManager';
+import Ratelimit from './Ratelimit';
 const c = new Logger("Upload");
 
 export default async function run(req: Request, res: Response) {
@@ -19,9 +20,17 @@ export default async function run(req: Request, res: Response) {
             return;
         }
 
+        // Ratelimit
+        const ip = <string>req.headers['x-real-ip'] ?? req.ip;
+        if (Ratelimit.Instance.isLimited(ip)) {
+            res.status(429).send('Too many requests');
+            return;
+        }
+        Ratelimit.Instance.addUploadCount(ip);
+
         // Fetch owner
         const owner = await User.findOne({ _id: req.body.uid });
-        const isPremium = (owner?.premiumLevel || 0) >= PremiumLevel.PREMIUM;
+        const isPremium = (owner?.premiumLevel ?? 0) >= PremiumLevel.PREMIUM;
 
         // If the file size exceeds file limit, reject it
         const file = req.files.file as UploadedFile;
@@ -51,8 +60,7 @@ export default async function run(req: Request, res: Response) {
 
         const authData = req.body.uid ? { ...req.body, isPremium } : { uid: tmpUser._id };
 
-        const ip = req.headers['x-real-ip'] ?? req.ip;
-        new Content(file, authData).save(ip as string).then(async (saved: SavedContent) => {
+        new Content(file, authData).save(ip).then(async (saved: SavedContent) => {
             c.log(`${saved.uploadId} uploaded by ${ip}`);
             res.send(<UploadRsp>{
                 success: true,
@@ -72,7 +80,7 @@ export default async function run(req: Request, res: Response) {
             });
         });
     } catch (e) {
-        c.error(e as unknown as Error);
+        c.error(<Error>e);
         res.status(500).send(`An error has occured. Please contact info@${Config.DOMAIN_NAME}`);
     }
 }

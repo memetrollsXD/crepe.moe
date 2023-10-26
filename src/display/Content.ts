@@ -74,7 +74,8 @@ export default class Content {
                 ip,
                 file: stripped,
                 ownerUid: this.auth.uid,
-                isPremium: this.auth.isPremium
+                isPremium: this.auth.isPremium,
+                timestamp: Date.now()
             })
 
             await upload.save();

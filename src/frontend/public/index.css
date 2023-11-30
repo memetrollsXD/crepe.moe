@@ -271,12 +271,15 @@ a {
     color: white;
 }
 
-.copy-btn {
-    display: inline-block;
+.btn-div {
+    display: flex
+}
+
+.copy-btn,
+.edit-btn {
     clear: both;
-    margin: 0 auto;
-    margin-left: 0px;
-    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
     font-size: 14px;
     text-decoration: none;
     text-transform: initial;
@@ -292,6 +295,10 @@ a {
     background: #454cad;
     border-color: #454cad;
     cursor: pointer;
+    max-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .upload-size {

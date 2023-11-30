@@ -114,6 +114,9 @@ function onUpload(e: any) { // Fuck this i'm not finding the type
         uploadUrl.select();
     });
 
+    const btnDiv = document.createElement('div');
+    btnDiv.className = 'btn-div';
+
     const copyBtn = document.createElement('button');
     const copyIcon = document.createElement('i');
     copyIcon.className = 'fa fa-copy';
@@ -126,8 +129,17 @@ function onUpload(e: any) { // Fuck this i'm not finding the type
         uploadUrl.select();
     });
 
+    const tagBtn = document.createElement('button');
+    const editIcon = document.createElement('i');
+    editIcon.className = 'fa-solid fa-tag';
+    tagBtn.className = 'edit-btn';
+    tagBtn.innerText = '';
+    tagBtn.appendChild(editIcon);
+
+    if (token && token.premiumLevel >= 1) btnDiv.appendChild(tagBtn);
+    btnDiv.appendChild(copyBtn);
     metaU.appendChild(uploadUrl);
-    metaU.appendChild(copyBtn);
+    metaU.appendChild(btnDiv);
     upload.appendChild(metaU);
 
 
@@ -186,6 +198,40 @@ function onUpload(e: any) { // Fuck this i'm not finding the type
             setCookie('_CMOEAUTHTOKEN', rsp.newAccountToken);
         }
 
+        tagBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showModal([{ label: "Change ID", type: TextType.TextField }], {
+                label: null, buttons: [{
+                    label: "Submit", callback: async (e: MouseEvent) => {
+                        const parent = (<HTMLButtonElement>e.target).parentElement?.parentElement?.parentElement;
+                        let newId = "";
+                        parent?.childNodes.forEach(c => {
+                            c.childNodes.forEach((c2: any) => {
+                                if (c2.value) newId = c2.value;
+                            });
+                        });
+                        newId = newId.replace(/[^a-zA-Z0-9_-]/g, "_");
+                        if (!newId) return;
+
+                        XHR({
+                            type: 3,
+                            token: cookie!,
+                            id: rsp.data.url.id,
+                            data: { newId },
+                        }, (e) => {
+                            if (e.status != 200) {
+                                console.error(`Error ${e.status}: ${e.statusText}, ${e.responseText}`);
+                                showResponse(`Error ${e.status}: ${e.statusText}, ${e.responseText}`);
+                                return;
+                            }
+                        });
+
+                        uploadUrl.value = `${window.location.origin}/${newId}`;
+                    }
+                }]
+            });
+        });
+
         const url = `${window.location.origin}/${rsp.data.url.id}`;
         navigator.clipboard.writeText(url);
         uploadUrl.value = url;
@@ -221,3 +267,68 @@ if (window.File && window.FileList && window.FileReader) {
 }
 
 else fileDrag.style.display = "none";
+
+enum TextType {
+    TextField = 0,
+    TextArea = 1
+}
+
+function showModal(textFields: { label: string, type: TextType }[] = [], buttonFields: { label: string | null, buttons: { label: string, callback: (e: MouseEvent) => void, color?: string }[] } = { label: "", buttons: [] }) {
+    const modal = document.createElement("div");
+    modal.classList.add("modal");
+
+    const modalContent = document.createElement("div");
+    modalContent.classList.add("modal-content");
+
+    textFields.forEach(f => {
+        const label = document.createElement("label");
+        label.innerText = f.label;
+        const input = document.createElement(f.type ? "textarea" : "input");
+        // input.type = "text";
+        label.appendChild(input);
+        modalContent.appendChild(label);
+    });
+
+    const buttonLabel = document.createElement("label");
+    buttonLabel.innerText = buttonFields.label ?? "";
+    const buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("button-container");
+    buttonFields.buttons.forEach(b => {
+        const button = document.createElement("button");
+        button.innerText = b.label;
+        button.addEventListener("click", b.callback);
+        if (b.color) {
+            button.style.backgroundColor = b.color;
+        }
+        buttonContainer.appendChild(button);
+    });
+
+    buttonLabel.appendChild(buttonContainer);
+    modalContent.appendChild(buttonLabel);
+    modal.appendChild(modalContent);
+
+    // If clicked outside of modal, close it
+    modal.addEventListener("click", e => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+
+    document.body.appendChild(modal);
+}
+
+function XHR(data: {
+    type: 3, // Hardcoded IdReq
+    token: string,
+    id: string
+    data: any
+}, cb?: (e: XMLHttpRequest) => void): void {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${window.location.origin}/admin`, false);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    // console.log(data);
+
+    if (cb) xhr.onload = () => { cb(xhr); };
+
+    return xhr.send(JSON.stringify(data));
+}
